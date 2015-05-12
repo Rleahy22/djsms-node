@@ -20,16 +20,16 @@ function PlayerCtrl($window) {
         });
         vm.ready = true;
         vm.isPlaying = true;
-        vm.playStateImg = 'images/play-button.png';
+        vm.playStateImg = 'images/pause-button.png';
     };
 
     function togglePlay() {
         if (vm.isPlaying) {
             vm.player.pauseVideo();
-            vm.playStateImg = 'images/pause-button.png';
+            vm.playStateImg = 'images/play-button.png';
         } else {
             vm.player.playVideo();
-            vm.playStateImg = 'images/play-button.png';
+            vm.playStateImg = 'images/pause-button.png';
         }
         vm.isPlaying = !vm.isPlaying;
     }
