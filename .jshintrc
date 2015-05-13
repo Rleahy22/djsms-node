@@ -11,6 +11,7 @@
         "module": true,
         "require": true,
         "console": true,
-        "__dirname": true
+        "__dirname": true,
+        "YT": true
     }
 }
