@@ -5,4 +5,11 @@ angular.module('app')
 
 function PlayerCtrl() {
     var vm = this;
+    vm.playlist = [
+        {
+            videoId: 'M7lc1UVf-VE',
+            title: 'this',
+            thumbnail: 'http:whatever.com'
+        }
+    ]
 }

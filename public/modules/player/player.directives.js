@@ -3,11 +3,16 @@
 angular.module('app')
 .directive('youtubePlayer', youtubePlayer);
 
-function youtubePlayer($window) {
+youtubePlayer.$inject = ['$window', '$q', 'lodash'];
+
+function youtubePlayer($window, $q, _) {
     var directive = {
         link: link,
         templateUrl: 'modules/player/youtubePlayer.html',
-        restrict: 'EA'
+        restrict: 'EA',
+        scope: {
+            playlist: '='
+        }
     };
 
     return directive;
@@ -17,27 +22,42 @@ function youtubePlayer($window) {
         scope.isPlaying;
         scope.togglePlay = togglePlay;
         scope.loadPlayer = loadPlayer;
+        scope.onPlayerReady = onPlayerReady;
+        scope.addVideosToPlaylist = addVideosToPlaylist;
         scope.playStateImg = 'images/pause-button.png';
         scope.ready = false;
 
         if ($window.YT && $window.YT.loaded) {
-            loadPlayer();
+            scope.loadPlayer()
         } else {
             $window.onYouTubePlayerAPIReady = function() {
-                loadPlayer();
+                scope.loadPlayer()
             };
         }
 
         function loadPlayer() {
+            var playerPromise = $q.defer();
             scope.player = new YT.Player('ytplayer', {
                 height: '390',
                 width: '640',
-                videoId: 'M7lc1UVf-VE',
                 playerVars: { 'autoplay': 1, 'controls': 0 },
+                events:{
+                    'onReady': scope.onPlayerReady
+                }
             });
+        }
+
+        function onPlayerReady() {
             scope.ready = true;
             scope.isPlaying = true;
             scope.playStateImg = 'images/pause-button.png';
+            scope.addVideosToPlaylist();
+        }
+
+        function addVideosToPlaylist() {
+            _.each(scope.playlist, function(video) {
+                scope.player.loadVideoById(video.videoId);
+            });
         }
 
         function togglePlay() {
