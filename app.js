@@ -7,9 +7,13 @@ var less = require('koa-less');
 var serve = require('koa-static');
 var app = koa();
 
+var config = JSON.stringify({
+    youtubeKey: process.env.YOUTUBE_KEY
+});
+
 var render = views('views/', {
     map: {
-        html: 'swig'
+        html: 'hogan'
     }
 });
 
@@ -26,9 +30,15 @@ app.use(function *(next){
 app.use(router(app));
 app.get(/.+/, function *(next) {
     yield next;
-    this.body = yield render('index');
+    this.body = yield render('index', {
+        config: config
+    });
 });
 
 app.listen(8000, function() {
     console.log('Listening on port 8000');
+});
+
+process.on('uncaughtException', function (err) {
+    console.log('uncaughtException', err, err.stack);
 });

@@ -12,6 +12,7 @@
         "require": true,
         "console": true,
         "__dirname": true,
-        "YT": true
+        "YT": true,
+        "process": true
     }
 }

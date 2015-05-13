@@ -19,8 +19,11 @@
     <script src="/app.module.js"></script>
     <script src="/app.config.js"></script>
     <script src="modules/common/injector/injector.services.js"></script>
+    <script src="modules/common/config/config.services.js"></script>
     <script src="modules/player/player.controllers.js"></script>
     <script src="modules/player/player.directives.js"></script>
+    <script src="modules/player/playerSearch.services.js"></script>
+    <script>window.config.app = {{{ config }}};</script>
 </head>
 <body>
     <ui-view class="ng-scope" layout="row"></ui-view>

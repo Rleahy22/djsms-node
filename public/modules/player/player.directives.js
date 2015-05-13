@@ -28,6 +28,8 @@ function youtubePlayer($window, _) {
         scope.previousVideo       = previousVideo;
         scope.ready               = false;
         scope.togglePlay          = togglePlay;
+        scope.updatePlaylist      = updatePlaylist;
+        scope.updateState         = updateState;
 
         if ($window.YT && $window.YT.loaded) {
             scope.loadPlayer();
@@ -43,7 +45,8 @@ function youtubePlayer($window, _) {
                 width: '640',
                 playerVars: { 'autoplay': 1, 'controls': 0 },
                 events:{
-                    'onReady': scope.onPlayerReady
+                    'onReady': scope.onPlayerReady,
+                    'onStateChange': scope.updateState
                 }
             });
         }
@@ -61,11 +64,18 @@ function youtubePlayer($window, _) {
             var isPlaying = scope.player.getPlayerState();
             if (isPlaying === 1) {
                 scope.player.pauseVideo();
-                scope.playStateImg = 'images/play-button.png';
             } else {
                 scope.player.playVideo();
-                scope.playStateImg = 'images/pause-button.png';
             }
+        }
+
+        function updateState(event) {
+            if (event.data === 1) {
+                scope.playStateImg = 'images/pause-button.png';
+            } else {
+                scope.playStateImg = 'images/play-button.png';
+            }
+            scope.$digest();
         }
 
         function nextVideo() {
@@ -75,5 +85,18 @@ function youtubePlayer($window, _) {
         function previousVideo() {
             scope.player.previousVideo();
         }
+
+        function updatePlaylist() {
+            scope.playerPlaylist = _.pluck(scope.playlist, 'videoId');
+            var currentTime = scope.player.getCurrentTime();
+            var currentIndex = scope.player.getPlaylistIndex();
+            scope.player.loadPlaylist(scope.playerPlaylist, currentIndex, currentTime);
+        }
+
+        scope.$watch('playlist.length', function() {
+            if (scope.ready) {
+                scope.updatePlaylist();
+            }
+        });
     }
 }

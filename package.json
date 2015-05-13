@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "dependencies": {
     "co-views": "^0.3.0",
+    "hogan.js": "^3.0.2",
     "koa": "^0.20.0",
     "koa-less": "0.0.3",
     "koa-router": "^4.3.2",

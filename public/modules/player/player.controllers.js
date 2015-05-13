@@ -3,8 +3,11 @@
 angular.module('app')
 .controller('PlayerCtrl', PlayerCtrl);
 
-function PlayerCtrl() {
+PlayerCtrl.$inject = ['youtubeSearch'];
+
+function PlayerCtrl(youtubeSearch) {
     var vm = this;
+    vm.addVideoToPlaylist = addVideoToPlaylist;
     vm.playlist = [
         {
             videoId: 'M7lc1UVf-VE',
@@ -17,4 +20,21 @@ function PlayerCtrl() {
             thumbnail: 'https://thing.com'
         }
     ];
+    vm.search = search;
+    vm.searchResult = {};
+
+    function search() {
+        youtubeSearch.search(vm.searchText)
+        .then(function(result) {
+            vm.searchResult = {
+                thumbnail: result.snippet.thumbnails.default.url,
+                title: result.snippet.title,
+                videoId: result.id.videoId
+            };
+        });
+    }
+
+    function addVideoToPlaylist() {
+        vm.playlist.push(vm.searchResult);
+    }
 }
