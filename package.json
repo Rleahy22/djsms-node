@@ -6,13 +6,11 @@
     "hogan.js": "^3.0.2",
     "koa": "^0.20.0",
     "koa-less": "0.0.3",
-    "koa-router": "^4.3.2",
-    "swig": "^1.4.2"
+    "koa-router": "^4.3.2"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.2",
-    "grunt-wiredep": "^2.0.0",
-    "sni": "0.0.1"
+    "grunt-wiredep": "^2.0.0"
   }
 }
