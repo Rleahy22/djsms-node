@@ -1,11 +1,17 @@
-<div layout="column" flex role="main" class="md-accent djsms-player">
+<md-content layout="column" flex layout-padding role="main" class="md-accent djsms-player">
     <md-input-container>
         <input type="text" ng-model="player.searchText" aria-label="Search Youtube">
     </md-input-container>
     <md-button ng-click="player.search()">Search Youtube</md-button>
-    <div class="search-results" ng-if="player.searchResult.thumbnail" ng-click="player.addVideoToPlaylist(player.searchResult.videoId)">
+    <md-button class="search-results" ng-if="player.searchResult.thumbnail" ng-click="player.addVideoToPlaylist(player.searchResult.videoId)">
         <img src="{{player.searchResult.thumbnail}}">
-        <span>{{player.searchResult.title}}</span>
-    </div>
-    <div youtube-player playlist="player.playlist"></div>
-</div>
+        {{player.searchResult.title}}
+    </md-button>
+    <md-card youtube-player playlist="player.playlist"></md-card>
+    <md-list class="song-list">
+        <md-list-item ng-repeat="video in player.playlist track by $index">
+            <img src="{{video.thumbnail}}">
+            <span>{{video.title}}</span>
+        </md-list-item>
+    </md-list>
+</md-content>

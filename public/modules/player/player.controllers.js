@@ -11,13 +11,13 @@ function PlayerCtrl(youtubeSearch) {
     vm.playlist = [
         {
             videoId: 'M7lc1UVf-VE',
-            title: 'this',
-            thumbnail: 'http://whatever.com'
+            title: 'YouTube Developers Live: Embedded Web Player Customization',
+            thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
         },
         {
             videoId: 'tnXO-i7944M',
             title: 'Dan Wahlin - AngularJS in 20ish Minutes - NG-Conf 2014',
-            thumbnail: 'https://thing.com'
+            thumbnail: 'https://i.ytimg.com/vi/i9MHigUZKEM/default.jpg'
         }
     ];
     vm.search = search;
@@ -36,5 +36,6 @@ function PlayerCtrl(youtubeSearch) {
 
     function addVideoToPlaylist() {
         vm.playlist.push(vm.searchResult);
+        vm.searchResult = {};
     }
 }
