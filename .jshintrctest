@@ -1,0 +1,20 @@
+{
+    "esnext": true,
+    "camelcase": true,
+    "indent": 4,
+    "latedef": false,
+    "globalstrict": true,
+    "undef": true,
+    "unused": true,
+    "globals": {
+        "describe": true,
+        "bard": true,
+        "it": true,
+        "expect": true,
+        "beforeEach": true,
+        "$controller": true,
+        "$q": true,
+        "$rootScope": true,
+        "youtubeSearch": true
+    }
+}

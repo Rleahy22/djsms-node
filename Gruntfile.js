@@ -16,14 +16,25 @@ module.exports = function (grunt) {
             }
         },
         jshint: {
-            all: [
-                'Gruntfile.js',
-                'app.js',
-                'public/**/*.js',
-                '!public/bower_components/**/*.js'
-            ],
-            options: {
-                jshintrc: '.jshintrc'
+            ui: {
+                src: [
+                    'Gruntfile.js',
+                    'app.js',
+                    'public/**/*.js',
+                    '!public/**/*.spec.js',
+                    '!public/bower_components/**/*.js'
+                ],
+                options: {
+                    jshintrc: '.jshintrc'
+                }
+            },
+            test: {
+                src: [
+                    'public/**/*.spec.js',
+                ],
+                options: {
+                    jshintrc: '.jshintrctest'
+                }
             }
         },
         karma: {
