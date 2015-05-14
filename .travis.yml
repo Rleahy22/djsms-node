@@ -1,3 +1,11 @@
 language: node_js
 node_js:
     - 0.12
+before_script:
+    - 'export DISPLAY=:99.0'
+    - 'sh -e /etc/init.d/xvfb start'
+    - 'npm install -g bower karma grunt-cli jshint'
+    - 'npm install' # install npm packages
+    - 'bower install' # install bower packages
+after_script:
+    - 'grunt ci'
