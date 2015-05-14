@@ -7,7 +7,7 @@ describe("PlayerCtrl", function() {
         bard.appModule('app', function($provide) {
             $provide.value('configService', {
                 youtubeKey: 'fakeKey'
-            })
+            });
         });
 
         bard.inject(this, '$controller');
@@ -21,4 +21,4 @@ describe("PlayerCtrl", function() {
             expect(vm.playlist[0].title).toMatch(/YouTube/);
         });
     });
-})
+});

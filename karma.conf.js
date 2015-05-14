@@ -37,6 +37,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
+        'public/modules/**/!(*.spec).js': ['coverage'],
     },
 
 
@@ -46,8 +47,16 @@ module.exports = function(config) {
     reporters: ['progress', 'coverage'],
 
     coverageReporter: {
-        type: 'json',
-        dir: 'coverage'
+        reporters: [
+            {
+                type: 'json',
+                dir: 'coverage'
+            },
+            {
+                type: 'html',
+                dir: 'coverage'
+            }
+        ]
     },
 
 

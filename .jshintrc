@@ -13,6 +13,12 @@
         "console": true,
         "__dirname": true,
         "YT": true,
-        "process": true
+        "process": true,
+        "describe": true,
+        "bard": true,
+        "it": true,
+        "expect": true,
+        "beforeEach": true,
+        "$controller": true
     }
 }

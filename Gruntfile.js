@@ -44,5 +44,5 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('ci', ['karma', 'coverage']);
+    grunt.registerTask('ci', ['jshint', 'karma', 'coverage']);
 };
