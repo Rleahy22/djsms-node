@@ -7,15 +7,20 @@
     "undef": true,
     "unused": true,
     "globals": {
-        "describe": true,
-        "bard": true,
-        "it": true,
-        "expect": true,
-        "beforeEach": true,
+        "_": true,
         "$controller": true,
         "$q": true,
         "$rootScope": true,
-        "youtubeSearch": true,
-        "$httpBackend": true
+        "angular": true,
+        "bard": true,
+        "beforeEach": true,
+        "console": true,
+        "describe": true,
+        "expect": true,
+        "$httpBackend": true,
+        "it": true,
+        "module": true,
+        "sinon": true,
+        "youtubeSearch": true
     }
 }

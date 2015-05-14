@@ -8,7 +8,7 @@ youtubePlayer.$inject = ['$window', 'lodash'];
 function youtubePlayer($window, _) {
     var directive = {
         link: link,
-        templateUrl: 'modules/player/youtubePlayer.html',
+        templateUrl: '/modules/player/youtubePlayer.html',
         restrict: 'EA',
         scope: {
             playlist: '='

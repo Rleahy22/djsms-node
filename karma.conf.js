@@ -15,6 +15,8 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
+        'https://www.youtube.com/player_api',
+        'public/bower_components/lodash/lodash.js',
         'public/bower_components/angular/angular.js',
         'public/bower_components/angular-mocks/angular-mocks.js',
         'public/bower_components/angular-ui-router/release/angular-ui-router.js',
@@ -25,6 +27,7 @@ module.exports = function(config) {
         'public/app.module.js',
         'public/app.config.js',
         'public/modules/**/*.js',
+        'public/modules/**/*.html',
         'public/modules/**/*.spec.js'
     ],
 
@@ -38,8 +41,13 @@ module.exports = function(config) {
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
         'public/modules/**/!(*.spec).js': ['coverage'],
+        'public/modules/**/*.html':       ['ng-html2js']
     },
 
+    ngHtml2JsPreprocessor: {
+        moduleName: "templates",
+        stripPrefix: 'public'
+    },
 
     // test results reporter to use
     // possible values: 'dots', 'progress'
