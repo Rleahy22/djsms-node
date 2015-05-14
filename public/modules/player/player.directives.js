@@ -31,6 +31,7 @@ function youtubePlayer($window, _) {
         scope.updatePlaylist      = updatePlaylist;
         scope.updateState         = updateState;
 
+        /* istanbul ignore next */
         if ($window.YT && $window.YT.loaded) {
             scope.loadPlayer();
         } else {
@@ -39,6 +40,7 @@ function youtubePlayer($window, _) {
             };
         }
 
+        /* istanbul ignore next */
         function loadPlayer() {
             scope.player = new YT.Player('ytplayer', {
                 height: '390',

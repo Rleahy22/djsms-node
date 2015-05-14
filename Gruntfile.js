@@ -46,7 +46,7 @@ module.exports = function (grunt) {
             default: {
                 options: {
                     thresholds: {
-                        'statements': 50
+                        'statements': 95
                     },
                     dir: 'coverage',
                     root: './'
