@@ -2,6 +2,11 @@
 
 describe("PlayerCtrl", function() {
     var vm = {};
+    var testVideo = {
+        videoId: 481516,
+        title: "Test Title",
+        thumbnail: "http://test.com/image.png"
+    };
 
     beforeEach(function() {
         bard.appModule('app', function($provide) {
@@ -15,12 +20,12 @@ describe("PlayerCtrl", function() {
         bard.mockService(youtubeSearch, {
             search: $q.when({
                 id: {
-                    videoId: 481516
+                    videoId: testVideo.videoId
                 },
                 snippet: {
-                    title: "Test Title",
+                    title: testVideo.title,
                     thumbnails: {
-                        default: "http://test.com/image.png"
+                        default: testVideo.thumbnail
                     }
                 }
             })
@@ -41,6 +46,17 @@ describe("PlayerCtrl", function() {
             vm.search("Test query");
             $rootScope.$apply();
             expect(vm.searchResult.videoId).toEqual(481516);
+        });
+    });
+
+    describe("addVideoToPlaylist", function() {
+        it("should add video from search results to playlist", function() {
+            vm.searchResult = testVideo;
+
+            expect(vm.playlist.length).toEqual(2);
+            vm.addVideoToPlaylist();
+            expect(vm.playlist.length).toEqual(3);
+            expect(vm.playlist[2].title).toEqual(testVideo.title);
         });
     });
 });
