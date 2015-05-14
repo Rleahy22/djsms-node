@@ -15,6 +15,7 @@
         "$controller": true,
         "$q": true,
         "$rootScope": true,
-        "youtubeSearch": true
+        "youtubeSearch": true,
+        "$httpBackend": true
     }
 }
