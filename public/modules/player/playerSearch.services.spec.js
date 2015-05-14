@@ -2,11 +2,12 @@
 
 describe("youtubeSearch", function() {
     var youtubeSearch = {};
-    var youtubeBaseUrl = "https://www.googleapis.com/youtube/v3/search?key=fakeKey&part=snippet&maxResults=1&q=";
+    var youtubeBaseUrl = "https://www.googleapis.com/youtube/v3/search?key=fakeKey&part=snippet&maxResults=5&q=";
     var searchResults = [
         {
             id: {
-                videoId: 481516
+                videoId: 481516,
+                kind: "youtube#video"
             },
             snippet: {
                 title: "Test Title",

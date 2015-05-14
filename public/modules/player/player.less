@@ -1,10 +1,45 @@
 .djsms-player {
-    .player-controller {
-        height: 40px;
-        border: 1px solid black;
-        .player-controls {
-            height: 30px;
-            width: 30px;
+
+    .youtube-player {
+        padding-top: 5px;
+
+        iframe {
+            width: 60%;
+            border: 1px solid black;
+        }
+
+        .player-controller {
+            width: 60%;
+            margin-top: 0;
+            height: 40px;
+            border: 1px solid black;
+
+            .player-controls {
+                height: 30px;
+                width: 30px;
+            }
+        }
+    }
+
+    .search-results {
+        max-height: 64px;
+
+        .result-image {
+            max-height: 100%;
+        }
+
+        .result-text {
+            padding-left: 10px;
+        }
+    }
+
+    .song-list {
+        .song-row {
+            max-height: 48px;
+
+            .song-image {
+                max-height: 48px;
+            }
         }
     }
 }

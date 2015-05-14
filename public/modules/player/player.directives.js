@@ -43,8 +43,6 @@ function youtubePlayer($window, _) {
         /* istanbul ignore next */
         function loadPlayer() {
             scope.player = new YT.Player('ytplayer', {
-                height: '390',
-                width: '640',
                 playerVars: { 'autoplay': 1, 'controls': 0 },
                 events:{
                     'onReady': scope.onPlayerReady,

@@ -3,9 +3,9 @@
 angular.module('app')
 .factory('youtubeSearch', youtubeSearch);
 
-youtubeSearch.$inject = ['configService', '$http', '$q'];
+youtubeSearch.$inject = ['configService', '$http', '$q', 'lodash'];
 
-function youtubeSearch(configService, $http, $q) {
+function youtubeSearch(configService, $http, $q, _) {
     var service = {
         search: search
     };
@@ -16,15 +16,18 @@ function youtubeSearch(configService, $http, $q) {
         var url        = 'https://www.googleapis.com/youtube/v3/search?';
         var key        = 'key=' + configService.youtubeKey;
         var part       = '&part=snippet';
-        var maxResults = '&maxResults=1';
+        var maxResults = '&maxResults=5';
 
         query      = '&q=' + query;
         url = url + key + part + maxResults + query;
 
         $http.get(url)
         .success(function(response) {
-            var result = response.items[0];
-            searchPromise.resolve(angular.extend({}, result));
+            _.each(response.items, function(item) {
+                if (item.id.kind === "youtube#video") {
+                    searchPromise.resolve(angular.extend({}, item));
+                }
+            });
         })
         .error(function(response) {
             searchPromise.reject(response.data);
