@@ -22,5 +22,6 @@
     "karma-jasmine": "^0.3.5",
     "karma-sinon": "^1.0.4",
     "sinon": "^1.14.1"
-  }
+  },
+  "test": "./node_modules/karma/bin/karma start --single-run --browsers PhantomJS"
 }
