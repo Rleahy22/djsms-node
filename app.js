@@ -5,6 +5,7 @@ var router = require('koa-router');
 var views = require('co-views');
 var less = require('koa-less');
 var serve = require('koa-static');
+var Playlist = require('./services/playlists');
 var app = koa();
 
 var config = JSON.stringify({
@@ -28,11 +29,19 @@ app.use(function *(next){
 });
 
 app.use(router(app));
-app.get(/.+/, function *(next) {
+app.get('/layout/player/:id', function *(next) {
     yield next;
     this.body = yield render('index', {
         config: config
     });
+
+});
+app.get('/layout/player/get/:id', function *(next) {
+    yield next;
+    var playlist = yield Playlist.retrieve(this.params.id);
+    this.body = yield {
+        playlist: playlist
+    };
 });
 
 app.listen(8000, function() {

@@ -12,7 +12,7 @@ function config($locationProvider, $stateProvider, $urlRouterProvider) {
             templateUrl: '/modules/layout.html'
         })
         .state('layout.player', {
-            url: '/player',
+            url: '/player/:playlistId',
             templateUrl: '/modules/player/player.html',
             controller: 'PlayerCtrl as player'
         });
