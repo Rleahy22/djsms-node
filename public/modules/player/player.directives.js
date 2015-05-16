@@ -8,7 +8,7 @@ youtubePlayer.$inject = ['$window', 'lodash'];
 function youtubePlayer($window, _) {
     var directive = {
         link: link,
-        templateUrl: '/modules/player/youtubePlayer.html',
+        template: '<div id="ytplayer"></div>',
         restrict: 'EA',
         scope: {
             playlist: '='
@@ -20,16 +20,11 @@ function youtubePlayer($window, _) {
     function link(scope/* ,element, attrs */) {
         scope.addVideosToPlaylist = addVideosToPlaylist;
         scope.loadPlayer          = loadPlayer;
-        scope.nextVideo           = nextVideo;
         scope.onPlayerReady       = onPlayerReady;
         scope.player              = {};
         scope.playerPlaylist      = _.pluck(scope.playlist, 'videoId');
-        scope.playStateImg        = 'images/play-button.png';
-        scope.previousVideo       = previousVideo;
         scope.ready               = false;
-        scope.togglePlay          = togglePlay;
         scope.updatePlaylist      = updatePlaylist;
-        scope.updateState         = updateState;
 
         /* istanbul ignore next */
         if ($window.YT && $window.YT.loaded) {
@@ -43,7 +38,7 @@ function youtubePlayer($window, _) {
         /* istanbul ignore next */
         function loadPlayer() {
             scope.player = new YT.Player('ytplayer', {
-                playerVars: { 'autoplay': 1, 'controls': 0 },
+                playerVars: { 'autoplay': 1 },
                 events:{
                     'onReady': scope.onPlayerReady,
                     'onStateChange': scope.updateState
@@ -58,32 +53,6 @@ function youtubePlayer($window, _) {
 
         function addVideosToPlaylist() {
             scope.player.cuePlaylist(scope.playerPlaylist);
-        }
-
-        function togglePlay() {
-            var isPlaying = scope.player.getPlayerState();
-            if (isPlaying === 1) {
-                scope.player.pauseVideo();
-            } else {
-                scope.player.playVideo();
-            }
-        }
-
-        function updateState(event) {
-            if (event.data === 1) {
-                scope.playStateImg = 'images/pause-button.png';
-            } else {
-                scope.playStateImg = 'images/play-button.png';
-            }
-            scope.$digest();
-        }
-
-        function nextVideo() {
-            scope.player.nextVideo();
-        }
-
-        function previousVideo() {
-            scope.player.previousVideo();
         }
 
         function updatePlaylist() {

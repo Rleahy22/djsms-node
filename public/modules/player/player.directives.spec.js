@@ -61,65 +61,11 @@ describe("youtubePlayer", function() {
         });
     });
 
-    describe("togglePlay", function() {
-        it("pauses the player if currently playing", function() {
-            testState = 1;
-            elm.isolateScope().togglePlay();
-
-            expect(elm.isolateScope().player.pauseVideo.calledOnce).toEqual(true);
-        });
-
-        it("plays the player if currently paused", function() {
-            testState = 0;
-            elm.isolateScope().togglePlay();
-
-            expect(elm.isolateScope().player.playVideo.calledOnce).toEqual(true);
-        });
-    });
-
     describe("addVideosToPlaylist", function() {
         it("should add the playlist to youtubePlayer", function() {
             elm.isolateScope().addVideosToPlaylist();
 
             expect(elm.isolateScope().player.cuePlaylist.calledWith(elm.isolateScope().playerPlaylist)).toEqual(true);
-        });
-    });
-
-    describe("nextVideo", function() {
-        it("should skip to the next video", function() {
-            elm.isolateScope().nextVideo();
-
-            expect(elm.isolateScope().player.nextVideo.calledOnce).toEqual(true);
-        });
-    });
-
-    describe("previousVideo", function() {
-        it("should skip to the previous video", function() {
-            elm.isolateScope().previousVideo();
-
-            expect(elm.isolateScope().player.previousVideo.calledOnce).toEqual(true);
-        });
-    });
-
-    describe("updateState", function() {
-        it("should show a pause button if video is playing", function() {
-            var testEvent = {
-                data: 1
-            };
-
-            elm.isolateScope().updateState(testEvent);
-
-            expect(elm.isolateScope().playStateImg).toEqual('images/pause-button.png');
-        });
-
-        it("should show a play button if video is paused", function() {
-            var testEvent = {
-                data: 0
-            };
-
-            elm.isolateScope().updateState(testEvent);
-
-            expect(elm.isolateScope().playStateImg).toEqual('images/play-button.png');
         });
     });
 
