@@ -24,18 +24,21 @@ function PlayerCtrl(youtubeSearch) {
     vm.searchResult = {};
 
     function search() {
-        youtubeSearch.search(vm.searchText)
-        .then(function(result) {
-            vm.searchResult = {
-                thumbnail: result.snippet.thumbnails.default.url,
-                title: result.snippet.title,
-                videoId: result.id.videoId
-            };
-        });
+        if (vm.searchText) {
+            youtubeSearch.search(vm.searchText)
+            .then(function(result) {
+                vm.searchResult = {
+                    thumbnail: result.snippet.thumbnails.default.url,
+                    title: result.snippet.title,
+                    videoId: result.id.videoId
+                };
+            });
+        }
     }
 
     function addVideoToPlaylist() {
         vm.playlist.push(vm.searchResult);
-        vm.searchResult = {};
+        vm.searchText = null;
+        vm.searchResult = null;
     }
 }

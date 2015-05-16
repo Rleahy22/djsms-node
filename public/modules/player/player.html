@@ -1,6 +1,8 @@
 <md-content layout="column" flex layout-padding role="main" class="md-accent djsms-player">
-    <md-input-container>
-        <input type="text" ng-model="player.searchText" aria-label="Search Youtube" ng-keyup="player.search()" layout-align="center center">
+    <md-input-container class="youtube-search">
+        <form ng-submit="player.addVideoToPlaylist(player.searchResult.videoId)">
+            <input type="text" ng-model="player.searchText" class="search-input" aria-label="Search Youtube" ng-keyup="player.search()" layout-align="center center">
+        </form>
     </md-input-container>
     <md-button class="search-results" ng-if="player.searchResult.thumbnail" ng-click="player.addVideoToPlaylist(player.searchResult.videoId)">
         <div layout="row" layout-align="center center">

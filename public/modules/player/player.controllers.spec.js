@@ -43,9 +43,17 @@ describe("PlayerCtrl", function() {
 
     describe("search", function() {
         it("should return a youtube video object", function() {
-            vm.search("Test query");
+            vm.searchText = "Test Query";
+            vm.search();
             $rootScope.$apply();
             expect(vm.searchResult.videoId).toEqual(481516);
+        });
+
+        it("should not call youtubeSearch service#search if searchtext is undefined", function() {
+            vm.searchText = undefined;
+            vm.search();
+            $rootScope.$apply();
+            expect(vm.searchResult).toEqual({});
         });
     });
 
