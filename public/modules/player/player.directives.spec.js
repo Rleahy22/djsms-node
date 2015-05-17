@@ -16,18 +16,21 @@ describe("youtubePlayer", function() {
             testScope = $rootScope;
             elm = angular.element('<md-card youtube-player playlist="playlist"></md-card>');
 
-            testScope.playlist = [
-                {
-                    videoId: 'M7lc1UVf-VE',
-                    title: 'YouTube Developers Live: Embedded Web Player Customization',
-                    thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
-                },
-                {
-                    videoId: 'tnXO-i7944M',
-                    title: 'Dan Wahlin - AngularJS in 20ish Minutes - NG-Conf 2014',
-                    thumbnail: 'https://i.ytimg.com/vi/i9MHigUZKEM/default.jpg'
-                }
-            ];
+            testScope.playlist = {
+                title: "Test Playlist",
+                videos: [
+                    {
+                        videoId: 'M7lc1UVf-VE',
+                        title: 'YouTube Developers Live: Embedded Web Player Customization',
+                        thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
+                    },
+                    {
+                        videoId: 'tnXO-i7944M',
+                        title: 'Dan Wahlin - AngularJS in 20ish Minutes - NG-Conf 2014',
+                        thumbnail: 'https://i.ytimg.com/vi/i9MHigUZKEM/default.jpg'
+                    }
+                ]
+            };
 
             $compile(elm)(testScope);
             testScope.$digest();
@@ -43,21 +46,7 @@ describe("youtubePlayer", function() {
                     return 4;
                 },
                 loadPlaylist: sinon.spy(),
-                nextVideo: sinon.spy(),
-                pauseVideo: sinon.spy(),
-                playVideo: sinon.spy(),
-                previousVideo: sinon.spy()
             };
-        });
-    });
-
-    describe("initialization", function() {
-        it("should create an array of videoIds from scope.playlist", function() {
-            expect(elm.isolateScope().playlist).toEqual(testScope.playlist);
-            expect(elm.isolateScope().playerPlaylist).toEqual([
-                testScope.playlist[0].videoId,
-                testScope.playlist[1].videoId
-            ]);
         });
     });
 
@@ -93,7 +82,7 @@ describe("youtubePlayer", function() {
         it("should call updatePlaylist", function() {
             elm.isolateScope().updatePlaylist = sinon.spy();
             elm.isolateScope().ready = true;
-            elm.isolateScope().playlist.push({
+            elm.isolateScope().playlist.videos.push({
                 videoId: '481516',
                 title: 'Not Pennys Boat',
                 thumbnail: 'http://vignette3.wikia.nocookie.net/lostpedia/images/b/bf/VcAEc.jpg/revision/latest?cb=20141026201455'

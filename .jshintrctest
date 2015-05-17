@@ -21,6 +21,7 @@
         "it": true,
         "module": true,
         "sinon": true,
-        "youtubeSearch": true
+        "youtubeSearch": true,
+        "playlistService": true
     }
 }

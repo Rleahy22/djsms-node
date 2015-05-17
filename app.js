@@ -36,7 +36,7 @@ app.get('/layout/player/:id', function *(next) {
     });
 
 });
-app.get('/layout/player/get/:id', function *(next) {
+app.get('/playlists/get/:id', function *(next) {
     yield next;
     var playlist = yield Playlist.retrieve(this.params.id);
     this.body = yield {

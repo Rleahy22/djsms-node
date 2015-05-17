@@ -2,6 +2,11 @@
 
 describe("PlayerCtrl", function() {
     var vm = {};
+    var baseUrl = "http://localhost:8000/";
+    var playlistGetUrl = baseUrl + "playlists/get/1";
+    var testPlaylist = {
+        title: "Test Playlist"
+    };
     var testVideo = {
         videoId: 481516,
         title: "Test Title",
@@ -13,9 +18,12 @@ describe("PlayerCtrl", function() {
             $provide.value('configService', {
                 youtubeKey: 'fakeKey'
             });
+            $provide.value('$stateParams', {
+                playlistId: 1
+            });
         });
 
-        bard.inject(this, '$controller', '$q', '$rootScope', 'youtubeSearch');
+        bard.inject(this, '$controller', '$q', '$rootScope', '$httpBackend', 'youtubeSearch', 'playlistService');
 
         bard.mockService(youtubeSearch, {
             search: $q.when({
@@ -31,14 +39,17 @@ describe("PlayerCtrl", function() {
             })
         });
 
-        vm = $controller('PlayerCtrl');
-    });
-
-    describe("initialize", function() {
-        it("should initialize a playlist object", function() {
-            expect(vm.playlist.length).toEqual(2);
-            expect(vm.playlist[0].title).toMatch(/YouTube/);
+        bard.mockService(playlistService, {
+            retrieve: $q.when({
+                testPlaylist
+            })
         });
+
+        $httpBackend.when('GET', playlistGetUrl).respond(function() {
+            return [200, testPlaylist, {}];
+        });
+
+        vm = $controller('PlayerCtrl');
     });
 
     describe("search", function() {
@@ -52,7 +63,6 @@ describe("PlayerCtrl", function() {
         it("should not call youtubeSearch service#search if searchtext is undefined", function() {
             vm.searchText = undefined;
             vm.search();
-            $rootScope.$apply();
             expect(vm.searchResult).toEqual({});
         });
     });
@@ -60,11 +70,12 @@ describe("PlayerCtrl", function() {
     describe("addVideoToPlaylist", function() {
         it("should add video from search results to playlist", function() {
             vm.searchResult = testVideo;
+            $rootScope.$apply();
 
-            expect(vm.playlist.length).toEqual(2);
+            expect(vm.playlist.videos.length).toEqual(2);
             vm.addVideoToPlaylist();
-            expect(vm.playlist.length).toEqual(3);
-            expect(vm.playlist[2].title).toEqual(testVideo.title);
+            expect(vm.playlist.videos.length).toEqual(3);
+            expect(vm.playlist.videos[2].title).toEqual(testVideo.title);
         });
     });
 });

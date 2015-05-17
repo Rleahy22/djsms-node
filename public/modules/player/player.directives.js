@@ -22,7 +22,6 @@ function youtubePlayer($window, _) {
         scope.loadPlayer          = loadPlayer;
         scope.onPlayerReady       = onPlayerReady;
         scope.player              = {};
-        scope.playerPlaylist      = _.pluck(scope.playlist, 'videoId');
         scope.ready               = false;
         scope.updatePlaylist      = updatePlaylist;
 
@@ -39,16 +38,18 @@ function youtubePlayer($window, _) {
         function loadPlayer() {
             scope.player = new YT.Player('ytplayer', {
                 playerVars: { 'autoplay': 1 },
-                events:{
-                    'onReady': scope.onPlayerReady,
-                    'onStateChange': scope.updateState
+                events: {
+                    'onReady': scope.onPlayerReady
                 }
             });
         }
 
         function onPlayerReady() {
             scope.ready = true;
-            scope.addVideosToPlaylist();
+            if (!(_.isEmpty(scope.playlist.videos))) {
+                scope.playerPlaylist = _.pluck(scope.playlist.videos, 'videoId');
+                scope.addVideosToPlaylist();
+            }
         }
 
         function addVideosToPlaylist() {
@@ -56,13 +57,13 @@ function youtubePlayer($window, _) {
         }
 
         function updatePlaylist() {
-            scope.playerPlaylist = _.pluck(scope.playlist, 'videoId');
+            scope.playerPlaylist = _.pluck(scope.playlist.videos, 'videoId');
             var currentTime = scope.player.getCurrentTime();
             var currentIndex = scope.player.getPlaylistIndex();
             scope.player.loadPlaylist(scope.playerPlaylist, currentIndex, currentTime);
         }
 
-        scope.$watch('playlist.length', function() {
+        scope.$watch('playlist.videos.length', function() {
             if (scope.ready) {
                 scope.updatePlaylist();
             }
