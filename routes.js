@@ -4,7 +4,6 @@ var router   = require("koa-router");
 var views    = require('co-views');
 var Playlist = require('./services/playlists');
 
-
 var config = JSON.stringify({
     youtubeKey: process.env.YOUTUBE_KEY
 });
