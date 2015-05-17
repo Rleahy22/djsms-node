@@ -1,11 +1,17 @@
-<md-sidenav flex class="site-sidenav md-primary md-sidenav-left md-whiteframe-z2 md-default-theme" md-component-id="left" md-is-locked-open="true">
+<md-sidenav flex class="site-sidenav layout-nav md-primary md-sidenav-left md-whiteframe-z2 md-default-theme" md-component-id="left" md-is-locked-open="true">
     <md-toolbar >DJ-SMS</md-toolbar>
     <md-content flex role="navigation" class="md-primary md-default-theme">
-        <ul>
-            <li>Home</li>
-            <li>Users</li>
-            <li>Playlists</li>
-        </ul>
+        <md-list layout="column" layout-align="center start" class="nav-list">
+            <md-list-item class="nav-li">
+                <a ui-sref="layout" class="md-button">Home</a>
+            </md-list-item>
+            <md-list-item class="nav-li">
+                <a href="layout" class="md-button">Users</a>
+            </md-list-item>
+            <md-list-item class="nav-li">
+                <a href="playlists" class="md-button">Playlists</a>
+            </md-list-item>
+        </md-list>
     </md-content>
 </md-sidenav>
 <ui-view flex layout="column"></ui-view>

@@ -1,7 +1,11 @@
 <md-content layout="column" flex layout-padding role="main" class="md-accent djsms-player">
     <md-toolbar>
         <div class="md-toolbar-tools">
-            <h2 class="md-toolbar-item">{{player.playlist.title}}</h2>
+            <h2 class="md-toolbar-item md-breadcrumb">
+                <span><a ui-sref="layout.playlists">Playlists</a></span>
+                <span class="seperator-icon">&gt;</span>
+                <span md-breadcrumb-page>{{player.playlist.title}}</span>
+            </h2>
         </div>
     </md-toolbar>
     <md-input-container class="youtube-search">

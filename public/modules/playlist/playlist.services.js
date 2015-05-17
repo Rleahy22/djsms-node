@@ -7,9 +7,25 @@ playlistService.$inject = ['$http', '$q'];
 
 function playlistService($http, $q) {
     var service = {
-        retrieve: retrieve
+        create: create,
+        retrieve: retrieve,
+        retrieveAll: retrieveAll
     };
     return service;
+
+    function create(title) {
+        var createPromise = $q.defer();
+        var url = "http://localhost:8000/playlists/create";
+
+        $http.post(url, {title: title})
+        .then(function(response) {
+            createPromise.resolve(angular.extend({}, response.data.playlist));
+        }, function(response) {
+            createPromise.reject(response.data);
+        });
+
+        return createPromise.promise;
+    }
 
     function retrieve(playlistId) {
         var retrievePromise = $q.defer();
@@ -23,5 +39,19 @@ function playlistService($http, $q) {
         });
 
         return retrievePromise.promise;
+    }
+
+    function retrieveAll() {
+        var retrieveAllPromise = $q.defer();
+        var url = "http://localhost:8000/playlists/all";
+
+        $http.get(url)
+        .then(function(response) {
+            retrieveAllPromise.resolve(angular.extend({}, response.data.playlists));
+        }, function(response) {
+            retrieveAllPromise.reject(response.data);
+        });
+
+        return retrieveAllPromise.promise;
     }
 }
