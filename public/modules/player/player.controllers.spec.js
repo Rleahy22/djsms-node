@@ -40,9 +40,7 @@ describe("PlayerCtrl", function() {
         });
 
         bard.mockService(playlistService, {
-            retrieve: $q.when({
-                testPlaylist
-            })
+            retrieve: $q.when(testPlaylist)
         });
 
         $httpBackend.when('GET', playlistGetUrl).respond(function() {
