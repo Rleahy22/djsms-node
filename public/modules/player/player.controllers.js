@@ -9,6 +9,7 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService) {
     var vm = this;
     vm.addVideoToPlaylist = addVideoToPlaylist;
     vm.playlistId = $stateParams.playlistId;
+    vm.playVideo = playVideo;
     vm.search = search;
     vm.searchResult = {};
 
@@ -33,6 +34,16 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService) {
         });
     }
 
+    function addVideoToPlaylist() {
+        vm.playlist.videos.push(vm.searchResult);
+        vm.searchText = null;
+        vm.searchResult = null;
+    }
+
+    function playVideo(index) {
+        vm.playlist.activeVideo = index;
+    }
+
     function search() {
         if (vm.searchText) {
             youtubeSearch.search(vm.searchText)
@@ -44,11 +55,5 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService) {
                 };
             });
         }
-    }
-
-    function addVideoToPlaylist() {
-        vm.playlist.videos.push(vm.searchResult);
-        vm.searchText = null;
-        vm.searchResult = null;
     }
 }

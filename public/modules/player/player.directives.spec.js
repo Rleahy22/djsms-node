@@ -46,6 +46,7 @@ describe("youtubePlayer", function() {
                     return 4;
                 },
                 loadPlaylist: sinon.spy(),
+                playVideoAt: sinon.spy()
             };
         });
     });
@@ -78,7 +79,22 @@ describe("youtubePlayer", function() {
         });
     });
 
-    describe("changes to playlist", function() {
+    describe("onStateChange", function() {
+        it("should set update playlist.activeVideo", function() {
+            expect(elm.isolateScope().playlist.activeVideo).toEqual(undefined);
+            elm.isolateScope().onStateChange();
+            expect(elm.isolateScope().playlist.activeVideo).toEqual(4);
+        });
+    });
+
+    describe("change video", function() {
+        it("should change player to selected video", function() {
+            elm.isolateScope().changeVideo(2);
+            expect(elm.isolateScope().player.playVideoAt.calledWith(2)).toEqual(true);
+        });
+    });
+
+    describe("changes to playlist videos", function() {
         it("should call updatePlaylist", function() {
             elm.isolateScope().updatePlaylist = sinon.spy();
             elm.isolateScope().ready = true;
@@ -90,6 +106,17 @@ describe("youtubePlayer", function() {
             elm.isolateScope().$apply();
 
             expect(elm.isolateScope().updatePlaylist.calledOnce).toEqual(true);
+        });
+    });
+
+    describe("changes to playlist activeVideo", function() {
+        it("should call updatePlaylist", function() {
+            elm.isolateScope().changeVideo = sinon.spy();
+            elm.isolateScope().ready = true;
+            elm.isolateScope().playlist.activeVideo = 1;
+            elm.isolateScope().$apply();
+
+            expect(elm.isolateScope().changeVideo.calledOnce).toEqual(true);
         });
     });
 });

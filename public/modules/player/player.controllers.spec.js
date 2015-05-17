@@ -78,4 +78,14 @@ describe("PlayerCtrl", function() {
             expect(vm.playlist.videos[2].title).toEqual(testVideo.title);
         });
     });
+
+    describe("playVideo", function() {
+        it("should set activeVideo to selected video", function() {
+            $rootScope.$apply();
+
+            expect(vm.playlist.activeVideo).toEqual(undefined);
+            vm.playVideo(1);
+            expect(vm.playlist.activeVideo).toEqual(1);
+        });
+    });
 });

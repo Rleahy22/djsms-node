@@ -11,7 +11,8 @@ function youtubePlayer($window, _) {
         template: '<div id="ytplayer"></div>',
         restrict: 'EA',
         scope: {
-            playlist: '='
+            playlist: '=',
+            activeVideo: '='
         }
     };
 
@@ -19,8 +20,10 @@ function youtubePlayer($window, _) {
 
     function link(scope/* ,element, attrs */) {
         scope.addVideosToPlaylist = addVideosToPlaylist;
+        scope.changeVideo         = changeVideo;
         scope.loadPlayer          = loadPlayer;
         scope.onPlayerReady       = onPlayerReady;
+        scope.onStateChange       = onStateChange;
         scope.player              = {};
         scope.ready               = false;
         scope.updatePlaylist      = updatePlaylist;
@@ -34,12 +37,24 @@ function youtubePlayer($window, _) {
             };
         }
 
+        function addVideosToPlaylist() {
+            scope.player.cuePlaylist(scope.playerPlaylist);
+        }
+
+        function changeVideo(index) {
+            var currentIndex = scope.player.getPlaylistIndex();
+            if (currentIndex !== index) {
+                scope.player.playVideoAt(index);
+            }
+        }
+
         /* istanbul ignore next */
         function loadPlayer() {
             scope.player = new YT.Player('ytplayer', {
                 playerVars: { 'autoplay': 1 },
                 events: {
-                    'onReady': scope.onPlayerReady
+                    'onReady': scope.onPlayerReady,
+                    'onStateChange': scope.onStateChange
                 }
             });
         }
@@ -52,8 +67,10 @@ function youtubePlayer($window, _) {
             }
         }
 
-        function addVideosToPlaylist() {
-            scope.player.cuePlaylist(scope.playerPlaylist);
+        function onStateChange() {
+            var currentIndex = scope.player.getPlaylistIndex();
+            scope.playlist.activeVideo = currentIndex;
+            scope.$apply();
         }
 
         function updatePlaylist() {
@@ -66,6 +83,12 @@ function youtubePlayer($window, _) {
         scope.$watch('playlist.videos.length', function() {
             if (scope.ready) {
                 scope.updatePlaylist();
+            }
+        });
+
+        scope.$watch('playlist.activeVideo', function() {
+            if (scope.playlist && scope.ready) {
+                scope.changeVideo(scope.playlist.activeVideo);
             }
         });
     }
