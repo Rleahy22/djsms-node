@@ -20,6 +20,9 @@ module.exports = function (grunt) {
                 src: [
                     'Gruntfile.js',
                     'app.js',
+                    'routes.js',
+                    'services/*.js',
+                    'models/**/*.js',
                     'public/**/*.js',
                     '!public/**/*.spec.js',
                     '!public/bower_components/**/*.js'

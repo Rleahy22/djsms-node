@@ -1,11 +1,11 @@
 "use strict";
 
-var fs = require('fs');
-var path = require('path');
-var yaml_config = require('node-yaml-config');
-var dbConfig = yaml_config.load(__dirname + '/../config/config.yml').db;
-var Sequelize = require('sequelize');
-var sequelize = new Sequelize(
+var fs         = require('fs');
+var path       = require('path');
+var yamlConfig = require('node-yaml-config');
+var dbConfig   = yamlConfig.load(__dirname + '/../config/config.yml').db;
+var Sequelize  = require('sequelize');
+var sequelize  = new Sequelize(
     dbConfig.database,
     dbConfig.user,
     dbConfig.password,

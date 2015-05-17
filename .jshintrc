@@ -13,6 +13,7 @@
         "console": true,
         "__dirname": true,
         "YT": true,
-        "process": true
+        "process": true,
+        "exports": true
     }
 }
