@@ -1,11 +1,13 @@
 "use strict";
 
-var router   = require("koa-router");
-var views    = require('co-views');
-var Playlist = require('./services/playlists');
+var router     = require("koa-router");
+var views      = require('co-views');
+var Playlist   = require('./services/playlists');
+var yamlConfig = require('node-yaml-config');
+var youtubeKey = yamlConfig.load(__dirname + '/config/config.yml').youtubeKey;
 
 var config = JSON.stringify({
-    youtubeKey: process.env.YOUTUBE_KEY
+    youtubeKey: youtubeKey
 });
 var render = views('views/', {
     map: {
