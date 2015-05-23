@@ -19,18 +19,6 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService) {
         playlistService.retrieve(vm.playlistId)
         .then(function(result) {
             vm.playlist = result;
-            vm.playlist.videos = [
-                {
-                    videoId: 'M7lc1UVf-VE',
-                    title: 'YouTube Developers Live: Embedded Web Player Customization',
-                    thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
-                },
-                {
-                    videoId: 'tnXO-i7944M',
-                    title: 'Dan Wahlin - AngularJS in 20ish Minutes - NG-Conf 2014',
-                    thumbnail: 'https://i.ytimg.com/vi/i9MHigUZKEM/default.jpg'
-                }
-            ];
         });
     }
 
@@ -51,7 +39,7 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService) {
                 vm.searchResult = {
                     thumbnail: result.snippet.thumbnails.default.url,
                     title: result.snippet.title,
-                    videoId: result.id.videoId
+                    videoid: result.id.videoId
                 };
             });
         }

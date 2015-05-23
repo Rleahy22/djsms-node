@@ -8,7 +8,8 @@ exports.create = function *(body) {
 
 exports.retrieve = function *(playlistId) {
     return yield db.playlist.findOne({
-        where: {id: playlistId}
+        where: {id: playlistId},
+        include: {model: db.video}
     });
 };
 

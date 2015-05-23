@@ -1,19 +1,21 @@
 "use strict";
 
 module.exports = function(sequelize, DataTypes) {
-    var Playlist = sequelize.define('playlist', {
-        title: DataTypes.STRING,
+    var Video = sequelize.define('video', {
+        videoid:   DataTypes.STRING,
+        title:     DataTypes.STRING,
+        thumbnail: DataTypes.STRING
     }, {
         timestamps: true,
         createdAt: 'createdat',
         updatedAt: 'updatedat',
         associate: function(models) {
-            Playlist.belongsToMany(models.video, {
+            Video.belongsToMany(models.playlist, {
                 through: 'playlistsvideos',
-                foreignKey: 'playlistid'
+                foreignKey: 'videoid'
             });
         }
     });
 
-    return Playlist;
+    return Video;
 };

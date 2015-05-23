@@ -4,13 +4,14 @@ describe("PlayerCtrl", function() {
     var vm = {};
     var baseUrl = "http://localhost:8000/";
     var playlistGetUrl = baseUrl + "playlists/get/1";
-    var testPlaylist = {
-        title: "Test Playlist"
-    };
     var testVideo = {
         videoId: 481516,
         title: "Test Title",
         thumbnail: "http://test.com/image.png"
+    };
+    var testPlaylist = {
+        title: "Test Playlist",
+        videos: [testVideo]
     };
 
     beforeEach(function() {
@@ -55,7 +56,7 @@ describe("PlayerCtrl", function() {
             vm.searchText = "Test Query";
             vm.search();
             $rootScope.$apply();
-            expect(vm.searchResult.videoId).toEqual(481516);
+            expect(vm.searchResult.videoid).toEqual(481516);
         });
 
         it("should not call youtubeSearch service#search if searchtext is undefined", function() {
@@ -70,10 +71,10 @@ describe("PlayerCtrl", function() {
             vm.searchResult = testVideo;
             $rootScope.$apply();
 
-            expect(vm.playlist.videos.length).toEqual(2);
+            expect(vm.playlist.videos.length).toEqual(1);
             vm.addVideoToPlaylist();
-            expect(vm.playlist.videos.length).toEqual(3);
-            expect(vm.playlist.videos[2].title).toEqual(testVideo.title);
+            expect(vm.playlist.videos.length).toEqual(2);
+            expect(vm.playlist.videos[1].title).toEqual(testVideo.title);
         });
     });
 

@@ -26,6 +26,7 @@ fs.readdirSync(__dirname + '/')
 });
 
 Object.keys(models).forEach(function (modelName) {
+    console.log(modelName);
     if (models[modelName].options.hasOwnProperty('associate')) {
         models[modelName].options.associate(models);
     }

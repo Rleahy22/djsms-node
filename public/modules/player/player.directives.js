@@ -62,7 +62,7 @@ function youtubePlayer($window, _) {
         function onPlayerReady() {
             scope.ready = true;
             if (!(_.isEmpty(scope.playlist.videos))) {
-                scope.playerPlaylist = _.pluck(scope.playlist.videos, 'videoId');
+                scope.playerPlaylist = _.pluck(scope.playlist.videos, 'videoid');
                 scope.addVideosToPlaylist();
             }
         }
@@ -74,7 +74,7 @@ function youtubePlayer($window, _) {
         }
 
         function updatePlaylist() {
-            scope.playerPlaylist = _.pluck(scope.playlist.videos, 'videoId');
+            scope.playerPlaylist = _.pluck(scope.playlist.videos, 'videoid');
             var currentTime = scope.player.getCurrentTime();
             var currentIndex = scope.player.getPlaylistIndex();
             scope.player.loadPlaylist(scope.playerPlaylist, currentIndex, currentTime);
