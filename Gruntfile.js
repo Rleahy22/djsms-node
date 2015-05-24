@@ -5,6 +5,8 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-karma');
     grunt.loadNpmTasks('grunt-istanbul-coverage');
+    grunt.loadNpmTasks('grunt-mocha-test');
+    grunt.loadNpmTasks('grunt-mocha-istanbul');
 
     grunt.initConfig({
         wiredep: {
@@ -18,7 +20,6 @@ module.exports = function (grunt) {
         jshint: {
             ui: {
                 src: [
-                    'Gruntfile.js',
                     'app.js',
                     'routes.js',
                     'services/*.js',
@@ -45,6 +46,36 @@ module.exports = function (grunt) {
                 configFile: 'karma.conf.js'
             }
         },
+        mochaTest: {
+            test: {
+                options: {
+                    reporter: 'spec',
+                },
+                src: ['test/**/*spec.js']
+            }
+        },
+        mocha_istanbul: {
+            coverage: {
+                src: './test',
+                options: {
+                    mask: '**/*spec.js',
+                    coverageFolder: 'coverage/node',
+                    mochaOptions: ['--harmony'],
+                    istanbulOptions: ['--harmony']
+                }
+            }
+        },
+        istanbul_check_coverage: {
+            default: {
+                options: {
+                    coverageFolder: 'coverage/node*',
+                    check: {
+                        lines: 80,
+                        statements: 80
+                    }
+                }
+            }
+        },
         coverage: {
             default: {
                 options: {
@@ -58,5 +89,5 @@ module.exports = function (grunt) {
         }
     });
 
-    grunt.registerTask('ci', ['jshint', 'karma', 'coverage']);
+    grunt.registerTask('ci', ['jshint', 'mochaTest', 'mocha_istanbul', 'istanbul_check_coverage', 'karma', 'coverage']);
 };

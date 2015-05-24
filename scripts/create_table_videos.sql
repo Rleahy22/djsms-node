@@ -3,6 +3,6 @@ create table videos(
     videoid text NOT NULL,
     title text NOT NULL,
     thumbnail text NOT NULL,
-    createdat timestamp without time zone default (now() at time zone 'utc'),
-    updatedat timestamp without time zone default (now() at time zone 'utc')
+    createdat timestamp with time zone default (now() at time zone 'utc'),
+    updatedat timestamp with time zone default (now() at time zone 'utc')
 );
