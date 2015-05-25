@@ -14,7 +14,7 @@
     </form>
     <md-list class="playlists-list">
         <md-list-item ng-repeat="playlist in playlists.playlists track by $index" class="song-row md-default-theme">
-            <h2><a ui-sref="layout.playlist({playlistId: playlist.id})" class="md-button">{{playlist.title}}</a></h2>
+            <a ui-sref="layout.playlist({playlistId: playlist.id})" class="md-button">{{playlist.title}}</a>
         </md-list-item>
     </md-list>
 </md-content>
