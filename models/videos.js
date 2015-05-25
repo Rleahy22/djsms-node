@@ -2,6 +2,7 @@
 
 module.exports = function(sequelize, DataTypes) {
     var Video = sequelize.define('video', {
+        id:        {type: DataTypes.INTEGER, unique: true},
         videoid:   DataTypes.STRING,
         title:     DataTypes.STRING,
         thumbnail: DataTypes.STRING

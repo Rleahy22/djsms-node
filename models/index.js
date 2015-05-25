@@ -11,7 +11,9 @@ var sequelize  = new Sequelize(
     dbConfig.password,
     {
         host: dbConfig.host,
-        dialect: "postgres"
+        dialect: "postgres",
+        returning: true,
+        omitNull: true
     }
 );
 var models = {};

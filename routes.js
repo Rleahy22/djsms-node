@@ -54,4 +54,12 @@ module.exports = function(app) {
             playlist: playlist
         };
     });
+    app.put('/playlists/:id', function *(next) {
+        yield next;
+        this.body = this.request.body;
+        var playlist = yield Playlist.update(this.body);
+        this.body = yield {
+            playlist: playlist
+        };
+    });
 };

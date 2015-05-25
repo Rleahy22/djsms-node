@@ -7,11 +7,29 @@ playlistService.$inject = ['$http', '$q'];
 
 function playlistService($http, $q) {
     var service = {
+        addVideo: addVideo,
         create: create,
         retrieve: retrieve,
         retrieveAll: retrieveAll
     };
     return service;
+
+    function addVideo(playlist, video) {
+        var updatePromise = $q.defer();
+        var url = "http://localhost:8000/playlists/" + playlist.id;
+
+        $http.put(url, {
+            playlist: playlist,
+            video: video
+        })
+        .then(function(response) {
+            updatePromise.resolve(angular.extend({}, response.data.playlist));
+        }, function(response) {
+            updatePromise.reject(response.data);
+        });
+
+        return updatePromise.promise;
+    }
 
     function create(title) {
         var createPromise = $q.defer();

@@ -24,8 +24,12 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService) {
 
     function addVideoToPlaylist() {
         vm.playlist.videos.push(vm.searchResult);
-        vm.searchText = null;
-        vm.searchResult = null;
+        playlistService.addVideo(vm.playlist, vm.searchResult)
+        .then(function(result) {
+            vm.searchText = null;
+            vm.searchResult = null;
+            vm.playlist = result;
+        });
     }
 
     function playVideo(index) {

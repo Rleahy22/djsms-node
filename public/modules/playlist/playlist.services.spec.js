@@ -8,12 +8,20 @@ describe("playlistService", function() {
         title: "Brand New Playlist"
     };
     var playlistCreateUrl = baseUrl + "create";
+    var playlistUpdateUrl = baseUrl + "1";
     var playlistsAllGet;
     var playlistsPost;
+    var playlistsPut;
     var playlistService = {};
+    var testVideo = {
+        title: "Test Video",
+        thumbnail: "http://test.com/image.png",
+        videoId: "abcd481516"
+    };
     var testPlaylist = {
+        id: 1,
         title: "Test Playlist",
-        videos: []
+        videos: [testVideo]
     };
     var testPlaylists = [
         {
@@ -54,6 +62,11 @@ describe("playlistService", function() {
         playlistsPost.respond(function() {
             return [200, {playlist: newTestPlaylist}, {}];
         });
+
+        playlistsPut = $httpBackend.whenPUT(playlistUpdateUrl);
+        playlistsPut.respond(function() {
+            return [200, {playlist: testPlaylist}, {}];
+        });
     });
 
     describe("retrieve", function() {
@@ -61,7 +74,7 @@ describe("playlistService", function() {
             playlistService.retrieve(1)
             .then(function(result) {
                 expect(result.title).toEqual("Test Playlist");
-                expect(result.videos).toEqual([]);
+                expect(result.videos).toEqual([testVideo]);
             }, function() {
                 expect(1).toEqual(2);
             });
@@ -131,6 +144,19 @@ describe("playlistService", function() {
                 expect(1).toEqual(2);
             }, function(result) {
                 expect(result.data.message).toMatch(/Fatal Error/);
+            });
+
+            $httpBackend.flush();
+        });
+    });
+
+    describe('addVideo', function() {
+        it("should add a video to a playlist", function() {
+            playlistService.addVideo(testPlaylist, testVideo)
+            .then(function(result) {
+                expect(result.videos.length).toEqual(1);
+            }, function() {
+                expect(2).toEqual(1);
             });
 
             $httpBackend.flush();
