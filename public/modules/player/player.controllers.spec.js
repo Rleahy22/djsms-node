@@ -63,7 +63,7 @@ describe("PlayerCtrl", function() {
         it("should not call youtubeSearch service#search if searchtext is undefined", function() {
             vm.searchText = undefined;
             vm.search();
-            expect(vm.searchResult).toEqual({});
+            expect(vm.searchResult).toEqual(null);
         });
     });
 

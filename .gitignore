@@ -3,3 +3,4 @@ public/bower_components/*
 public/**/*.css
 coverage/*
 config/*
+npm-debug.log

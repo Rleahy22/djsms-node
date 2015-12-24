@@ -7,9 +7,10 @@ playlistService.$inject = ['$http', '$q'];
 
 function playlistService($http, $q) {
     var service = {
-        addVideo: addVideo,
-        create: create,
-        retrieve: retrieve,
+        addVideo:    addVideo,
+        create:      create,
+        deleteVideo: deleteVideo,
+        retrieve:    retrieve,
         retrieveAll: retrieveAll
     };
     return service;
@@ -43,6 +44,20 @@ function playlistService($http, $q) {
         });
 
         return createPromise.promise;
+    }
+
+    function deleteVideo(videoId) {
+        var deletePromise = $q.defer();
+        var url = "http://localhost:8000/videos/" + videoId;
+
+        $http.delete(url)
+        .then(function() {
+            deletePromise.resolve();
+        }, function(response) {
+            deletePromise.reject(response.data);
+        });
+
+        return deletePromise.promise;
     }
 
     function retrieve(playlistId) {

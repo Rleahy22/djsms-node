@@ -3,15 +3,17 @@
 angular.module('app')
 .controller('PlayerCtrl', PlayerCtrl);
 
-PlayerCtrl.$inject = ['$stateParams', 'youtubeSearch', 'playlistService'];
+PlayerCtrl.$inject = ['$stateParams', 'youtubeSearch', 'playlistService', 'lodash'];
 
-function PlayerCtrl($stateParams, youtubeSearch, playlistService) {
+function PlayerCtrl($stateParams, youtubeSearch, playlistService, _) {
     var vm = this;
+
     vm.addVideoToPlaylist = addVideoToPlaylist;
-    vm.playlistId = $stateParams.playlistId;
-    vm.playVideo = playVideo;
-    vm.search = search;
-    vm.searchResult = {};
+    vm.deleteVideo        = deleteVideo;
+    vm.playlistId         = $stateParams.playlistId;
+    vm.playVideo          = playVideo;
+    vm.search             = search;
+    vm.searchResult       = {};
 
     activate();
 
@@ -32,6 +34,15 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService) {
         });
     }
 
+    function deleteVideo(videoId) {
+        playlistService.deleteVideo(videoId)
+        .then(function() {
+            _.remove(vm.playlist.videos, function(video) {
+                return video.id === videoId;
+            });
+        });
+    }
+
     function playVideo(index) {
         vm.playlist.activeVideo = index;
     }
@@ -46,6 +57,8 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService) {
                     videoid: result.id.videoId
                 };
             });
+        } else {
+            vm.searchResult = null;
         }
     }
 }

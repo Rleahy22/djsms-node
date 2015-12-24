@@ -8,7 +8,7 @@ var serve      = require('koa-static');
 var app        = koa();
 
 app.use(bodyParser());
-app.use(less(__dirname + '/public'));
+app.use(less(__dirname + '/'));
 app.use(serve(__dirname + '/'));
 
 app.use(function *(next) {
