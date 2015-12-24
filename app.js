@@ -11,7 +11,7 @@ app.use(bodyParser());
 app.use(less(__dirname + '/public'));
 app.use(serve(__dirname + '/'));
 
-app.use(function *(next){
+app.use(function *(next) {
   var start = new Date();
   yield next;
   var ms = new Date() - start;

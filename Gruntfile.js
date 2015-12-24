@@ -60,8 +60,6 @@ module.exports = function (grunt) {
                 options: {
                     mask: '**/*spec.js',
                     coverageFolder: 'coverage/node',
-                    mochaOptions: ['--harmony'],
-                    istanbulOptions: ['--harmony']
                 }
             }
         },

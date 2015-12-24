@@ -1,6 +1,6 @@
 "use strict";
 
-var router     = require("koa-router");
+var router     = require("koa-router")();
 var views      = require('co-views');
 var Playlist   = require('./services/playlists');
 var yamlConfig = require('node-yaml-config');
@@ -17,16 +17,14 @@ var render = views('views/', {
 });
 
 module.exports = function(app) {
-    app.use(router(app));
-
-    app.get('/playlists/', function *(next) {
+    router.get('/playlists/', function *(next) {
         yield next;
         this.body = yield render('index', {
             config: config
         });
     });
 
-    app.get('/playlists/all', function *(next) {
+    router.get('/playlists/all', function *(next) {
         yield next;
         var playlists = yield Playlist.retrieveAll();
         this.body = yield {
@@ -34,13 +32,13 @@ module.exports = function(app) {
             config: config
         };
     });
-    app.get('/playlists/:id', function *(next) {
+    router.get('/playlists/:id', function *(next) {
         yield next;
         this.body = yield render('index', {
             config: config
         });
     });
-    app.post('/playlists/create', function *(next) {
+    router.post('/playlists/create', function *(next) {
         yield next;
         this.body = this.request.body;
         var playlist = yield Playlist.create(this.body);
@@ -50,7 +48,7 @@ module.exports = function(app) {
         };
 
     });
-    app.get('/playlists/get/:id', function *(next) {
+    router.get('/playlists/get/:id', function *(next) {
         yield next;
         var playlist = yield Playlist.retrieve(this.params.id);
         this.body = yield {
@@ -58,7 +56,7 @@ module.exports = function(app) {
             config: config
         };
     });
-    app.put('/playlists/:id', function *(next) {
+    router.put('/playlists/:id', function *(next) {
         yield next;
         this.body = this.request.body;
         var playlist = yield Playlist.update(this.body);
@@ -67,4 +65,7 @@ module.exports = function(app) {
             config: config
         };
     });
+
+    app.use(router.routes());
+    app.use(router.allowedMethods());
 };
