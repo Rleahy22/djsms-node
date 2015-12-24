@@ -2,7 +2,7 @@
 
 module.exports = function(sequelize, DataTypes) {
     var Playlist = sequelize.define('playlist', {
-        id: {type: DataTypes.INTEGER, unique: true},
+        id: {type: DataTypes.INTEGER, unique: true, primaryKey: true},
         title: DataTypes.STRING,
     }, {
         timestamps: true,

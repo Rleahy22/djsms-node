@@ -9,6 +9,7 @@ var youtubeKey = yamlConfig.load(__dirname + '/config/config.yml').youtubeKey;
 var config = JSON.stringify({
     youtubeKey: youtubeKey
 });
+
 var render = views('views/', {
     map: {
         html: 'hogan'
@@ -29,7 +30,8 @@ module.exports = function(app) {
         yield next;
         var playlists = yield Playlist.retrieveAll();
         this.body = yield {
-            playlists: playlists
+            playlists: playlists,
+            config: config
         };
     });
     app.get('/playlists/:id', function *(next) {
@@ -43,7 +45,8 @@ module.exports = function(app) {
         this.body = this.request.body;
         var playlist = yield Playlist.create(this.body);
         this.body = yield {
-            playlist: playlist
+            playlist: playlist,
+            config: config
         };
 
     });
@@ -51,7 +54,8 @@ module.exports = function(app) {
         yield next;
         var playlist = yield Playlist.retrieve(this.params.id);
         this.body = yield {
-            playlist: playlist
+            playlist: playlist,
+            config: config
         };
     });
     app.put('/playlists/:id', function *(next) {
@@ -59,7 +63,8 @@ module.exports = function(app) {
         this.body = this.request.body;
         var playlist = yield Playlist.update(this.body);
         this.body = yield {
-            playlist: playlist
+            playlist: playlist,
+            config: config
         };
     });
 };
