@@ -1,0 +1,15 @@
+default:
+    db:
+        host: localhost
+        user: username
+        password: password
+        database: db
+    youtubeKey: gibberishgibberish
+
+test:
+    db:
+        host: localhost
+        user: username
+        password: password
+        database: dbtest
+    youtubeKey: gibberishgibberish
