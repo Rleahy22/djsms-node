@@ -9,7 +9,7 @@
             <input type="text" ng-model="playlists.newTitle" class="create-input" aria-label="Create new Playlist" layout-align="center center">
         </md-input-container>
         <md-input-container>
-            <md-button type='submit'>Create Playlist</md-button>
+            <md-button type='submit' ng-disabled="!playlists.newTitle">Create Playlist</md-button>
         </md-input-container>
     </form>
     <md-list class="playlists-list">
