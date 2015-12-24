@@ -1,7 +1,8 @@
 "use strict";
 
 describe("playlistService", function() {
-    var baseUrl = "http://localhost:8000/playlists/";
+    var baseUrl         = "http://localhost:8000/playlists/";
+    var baseVideoUrl    = "http://localhost:8000/videos/";
     var allPlaylistsUrl = baseUrl + "all";
     var newTestPlaylist = {
         id: 42,
@@ -33,6 +34,8 @@ describe("playlistService", function() {
             title: "Playlist Two"
         }
     ];
+    var videoDelete;
+    var videoDeleteUrl = baseVideoUrl + "1";
 
     beforeEach(function() {
         bard.appModule('app', function($provide) {
@@ -67,55 +70,20 @@ describe("playlistService", function() {
         playlistsPut.respond(function() {
             return [200, {playlist: testPlaylist}, {}];
         });
-    });
 
-    describe("retrieve", function() {
-        it("should retrieve a playlist by id", function() {
-            playlistService.retrieve(1)
-            .then(function(result) {
-                expect(result.title).toEqual("Test Playlist");
-                expect(result.videos).toEqual([testVideo]);
-            }, function() {
-                expect(1).toEqual(2);
-            });
-
-            $httpBackend.flush();
-        });
-
-        it("should error gracefully", function() {
-            playlistService.retrieve('error')
-            .then(function() {
-                expect(1).toEqual(2);
-            }, function(result) {
-                expect(result.data.message).toMatch(/Fatal Error/);
-            });
-
-            $httpBackend.flush();
+        videoDelete = $httpBackend.whenDELETE(videoDeleteUrl);
+        videoDelete.respond(function() {
+            return [200, "Success", {}];
         });
     });
 
-    describe("retrieve", function() {
-        it("should retrieve all playlists", function() {
-            playlistService.retrieveAll()
+    describe('addVideo', function() {
+        it("should add a video to a playlist", function() {
+            playlistService.addVideo(testPlaylist, testVideo)
             .then(function(result) {
-                expect(result[1].title).toMatch(/Playlist Two/);
+                expect(result.videos.length).toEqual(1);
             }, function() {
-                expect(1).toEqual(2);
-            });
-
-            $httpBackend.flush();
-        });
-
-        it("should error gracefully", function() {
-            playlistsAllGet.respond(function() {
-                return [500, {data: {message: "Fatal Error"}}, {}];
-            });
-
-            playlistService.retrieveAll('error')
-            .then(function() {
-                expect(1).toEqual(2);
-            }, function(result) {
-                expect(result.data.message).toMatch(/Fatal Error/);
+                expect(2).toEqual(1);
             });
 
             $httpBackend.flush();
@@ -150,13 +118,81 @@ describe("playlistService", function() {
         });
     });
 
-    describe('addVideo', function() {
-        it("should add a video to a playlist", function() {
-            playlistService.addVideo(testPlaylist, testVideo)
+    describe("deleteVideo", function() {
+        it("delete a Video by id", function() {
+            playlistService.deleteVideo(1)
             .then(function(result) {
-                expect(result.videos.length).toEqual(1);
+                expect(result).toEqual("Success");
             }, function() {
-                expect(2).toEqual(1);
+                expect(1).toEqual(2);
+            });
+
+            $httpBackend.flush();
+        });
+
+        it("should error gracefully", function() {
+            videoDelete.respond(function() {
+                return [500, {data: {message: "Fatal Error"}}, {}];
+            });
+
+            playlistService.deleteVideo(1)
+            .then(function() {
+                expect(1).toEqual(2);
+            }, function(result) {
+                expect(result.data.message).toMatch(/Fatal Error/);
+            });
+
+            $httpBackend.flush();
+        });
+    });
+
+    describe("retrieve", function() {
+        it("should retrieve a playlist by id", function() {
+            playlistService.retrieve(1)
+            .then(function(result) {
+                expect(result.title).toEqual("Test Playlist");
+                expect(result.videos).toEqual([testVideo]);
+            }, function() {
+                expect(1).toEqual(2);
+            });
+
+            $httpBackend.flush();
+        });
+
+        it("should error gracefully", function() {
+            playlistService.retrieve('error')
+            .then(function() {
+                expect(1).toEqual(2);
+            }, function(result) {
+                expect(result.data.message).toMatch(/Fatal Error/);
+            });
+
+            $httpBackend.flush();
+        });
+    });
+
+    describe("retrieveAll", function() {
+        it("should retrieve all playlists", function() {
+            playlistService.retrieveAll()
+            .then(function(result) {
+                expect(result[1].title).toMatch(/Playlist Two/);
+            }, function() {
+                expect(1).toEqual(2);
+            });
+
+            $httpBackend.flush();
+        });
+
+        it("should error gracefully", function() {
+            playlistsAllGet.respond(function() {
+                return [500, {data: {message: "Fatal Error"}}, {}];
+            });
+
+            playlistService.retrieveAll('error')
+            .then(function() {
+                expect(1).toEqual(2);
+            }, function(result) {
+                expect(result.data.message).toMatch(/Fatal Error/);
             });
 
             $httpBackend.flush();

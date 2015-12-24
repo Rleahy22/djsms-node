@@ -10,8 +10,10 @@ exports.delete = function *(videoId) {
         where: {id: videoId}
     })
     .then(function(video) {
-        video.destroy();
-        destroyPromise.resolve();
+        video.destroy()
+        .then(function(result) {
+            destroyPromise.resolve(result);
+        });
     });
 
     return yield destroyPromise.promise;

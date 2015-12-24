@@ -51,8 +51,8 @@ function playlistService($http, $q) {
         var url = "http://localhost:8000/videos/" + videoId;
 
         $http.delete(url)
-        .then(function() {
-            deletePromise.resolve();
+        .then(function(response) {
+            deletePromise.resolve(response.data);
         }, function(response) {
             deletePromise.reject(response.data);
         });
