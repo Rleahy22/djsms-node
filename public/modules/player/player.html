@@ -10,7 +10,15 @@
     </md-toolbar>
     <md-input-container class="youtube-search">
         <form ng-submit="player.addVideoToPlaylist(player.searchResult.videoId)">
-            <input type="text" ng-model="player.searchText" class="search-input" aria-label="Search Youtube" ng-keyup="player.search()" layout-align="center center">
+            <input
+                type="text"
+                ng-model="player.searchText"
+                class="search-input"
+                aria-label="Search Youtube"
+                ng-keyup="player.search()"
+                layout-align="center center"
+                placeholder="Search for Song"
+            >
         </form>
     </md-input-container>
     <md-button class="search-results" ng-if="player.searchResult.thumbnail" ng-click="player.addVideoToPlaylist(player.searchResult.videoId)">
