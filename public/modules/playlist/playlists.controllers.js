@@ -7,8 +7,9 @@ PlaylistsCtrl.$inject = ['$state', 'playlistService'];
 
 function PlaylistsCtrl($state, playlistService) {
     var vm = this;
+
     vm.createPlaylist = createPlaylist;
-    vm.playlists = [];
+    vm.playlists      = [];
 
     activate();
 

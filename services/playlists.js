@@ -3,22 +3,22 @@
 var db = require('../models/index');
 var Q  = require('q');
 
-exports.create = function *(body) {
+var create = function *(body) {
     return yield db.playlist.create(body);
 };
 
-exports.retrieve = function *(playlistId) {
+var retrieve = function *(playlistId) {
     return yield db.playlist.findOne({
         where: {id: playlistId},
         include: {model: db.video}
     });
 };
 
-exports.retrieveAll = function *() {
+var retrieveAll = function *() {
     return yield db.playlist.findAll();
 };
 
-exports.update = function *(body) {
+var update = function *(body) {
     var updatePromise = Q.defer();
 
     db.playlist.findOne({
@@ -49,4 +49,11 @@ exports.update = function *(body) {
     });
 
     return yield updatePromise.promise;
+};
+
+module.exports = {
+    create:      create,
+    retrieve:    retrieve,
+    retrieveAll: retrieveAll,
+    update:      update
 };

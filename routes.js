@@ -65,7 +65,7 @@ module.exports = function(app) {
     .del('/videos/:id', function *(next) {
         yield next;
         this.body = this.request.body;
-        yield Video.delete(this.params.id);
+        yield Video.destroy(this.params.id);
     });
 
     app.use(router.routes());

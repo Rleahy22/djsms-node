@@ -3,7 +3,7 @@
 var db = require('../models/index');
 var Q  = require('q');
 
-exports.delete = function *(videoId) {
+var destroy = function *(videoId) {
     var destroyPromise = Q.defer();
 
     db.video.findOne({
@@ -17,4 +17,8 @@ exports.delete = function *(videoId) {
     });
 
     return yield destroyPromise.promise;
+};
+
+module.exports = {
+    destroy: destroy
 };

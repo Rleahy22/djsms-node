@@ -1,9 +1,9 @@
 "use strict";
 
 describe("youtubeSearch", function() {
-    var youtubeSearch = {};
+    var youtubeSearch  = {};
     var youtubeBaseUrl = "https://www.googleapis.com/youtube/v3/search?key=fakeKey&part=snippet&maxResults=5&q=";
-    var searchResults = [
+    var searchResults  = [
         {
             id: {
                 videoId: 481516,

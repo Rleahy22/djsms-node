@@ -1,8 +1,8 @@
 "use strict";
 
 describe("PlayerCtrl", function() {
-    var vm = {};
-    var baseUrl = "http://localhost:8000/";
+    var vm             = {};
+    var baseUrl        = "http://localhost:8000/";
     var playlistGetUrl = baseUrl + "playlists/get/1";
     var testVideo = {
         videoId: 481516,
