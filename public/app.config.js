@@ -9,16 +9,16 @@ function config($locationProvider, $stateProvider, $urlRouterProvider) {
     $stateProvider
         .state('layout', {
             url: '/',
-            templateUrl: '/modules/layout.html'
+            templateUrl: '/public/modules/layout.html'
         })
         .state('layout.playlists', {
             url: 'playlists',
-            templateUrl: '/modules/playlist/playlists.html',
+            templateUrl: '/public/modules/playlist/playlists.html',
             controller: 'PlaylistsCtrl as playlists'
         })
         .state('layout.playlist', {
             url: 'playlists/:playlistId',
-            templateUrl: '/modules/player/player.html',
+            templateUrl: '/public/modules/player/player.html',
             controller: 'PlayerCtrl as player'
         });
 
