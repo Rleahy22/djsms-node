@@ -5,6 +5,7 @@ process.env.NODE_ENV = "test";
 var chai     = require('chai');
 var expect   = chai.expect;
 var db       = require('../../models/index');
+var conn     = require('../../models/index').sequelize;
 
 var Playlist = db.playlist;
 
@@ -14,6 +15,10 @@ afterEach(function() {
             id: {$gt: 0}
         }
     });
+});
+
+after(function() {
+    conn.close();
 });
 
 describe("Playlist", function() {
