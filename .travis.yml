@@ -5,7 +5,7 @@ before_script:
     - 'export DISPLAY=:99.0'
     - 'sh -e /etc/init.d/xvfb start'
     - 'cp config/config.example.yml config/config.yml'
-    - 'npm install -g karma grunt-cli jshint'
+    - 'npm install -g karma gulp-cli jshint'
     - 'npm install' # install npm packages
 after_script:
-    - 'grunt ci'
+    - 'gulp ci'
