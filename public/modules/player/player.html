@@ -27,7 +27,14 @@
             <span class="result-text">{{player.searchResult.title}}</span>
         </div>
     </md-button>
-    <md-card youtube-player class="youtube-player" playlist="player.playlist" active-video="player.activeVideo" layout="column" layout-align="center center"></md-card>
+    <md-card youtube-player
+        class="youtube-player"
+        playlist="player.playlist"
+        active-video="player.activeVideo"
+        updated-playlist="player.updatedPlaylist"
+        layout="column"
+        layout-align="center center">
+    </md-card>
     <md-list class="song-list">
         <md-list-item ng-repeat="video in player.playlist.videos track by $index" class="song-row md-default-theme" ng-class="{'md-accent': $index === player.playlist.activeVideo}" ng-click="player.playVideo($index)">
             <img class="song-image" src="{{video.thumbnail}}">

@@ -14,6 +14,7 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService, _) {
     vm.playVideo          = playVideo;
     vm.search             = search;
     vm.searchResult       = {};
+    vm.updatedPlaylist    = undefined;
 
     activate();
 
@@ -30,7 +31,7 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService, _) {
         .then(function(result) {
             vm.searchText = null;
             vm.searchResult = null;
-            vm.playlist = result;
+            vm.updatedPlaylist = result;
         });
     }
 

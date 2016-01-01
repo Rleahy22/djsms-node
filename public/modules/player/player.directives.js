@@ -11,8 +11,9 @@ function youtubePlayer($window, _) {
         template: '<div id="ytplayer"></div>',
         restrict: 'EA',
         scope: {
-            playlist: '=',
-            activeVideo: '='
+            activeVideo:     '=',
+            playlist:        '=',
+            updatedPlaylist: '='
         }
     };
 
@@ -69,6 +70,13 @@ function youtubePlayer($window, _) {
 
         function onStateChange() {
             var currentIndex = scope.player.getPlaylistIndex();
+
+            if (currentIndex !== scope.playlist.activeVideo && scope.updatedPlaylist) {
+                scope.playlist = scope.updatedPlaylist;
+                scope.updatedPlaylist = undefined;
+                scope.updatePlaylist();
+            }
+
             scope.playlist.activeVideo = currentIndex;
             scope.$apply();
         }
@@ -80,11 +88,11 @@ function youtubePlayer($window, _) {
             scope.player.loadPlaylist(scope.playerPlaylist, currentIndex, currentTime);
         }
 
-        scope.$watch('playlist.videos.length', function() {
-            if (scope.ready) {
-                scope.updatePlaylist();
-            }
-        });
+        // scope.$watch('playlist.videos.length', function() {
+        //     if (scope.ready) {
+        //         scope.updatePlaylist();
+        //     }
+        // });
 
         scope.$watch('playlist.activeVideo', function() {
             if (scope.playlist && scope.ready) {
