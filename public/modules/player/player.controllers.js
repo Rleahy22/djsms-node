@@ -35,7 +35,12 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService, _) {
         });
     }
 
-    function deleteVideo(videoId) {
+    function deleteVideo(videoId, event) {
+        if (event.stopPropagation) { event.stopPropagation() };
+        if (event.preventDefault) { event.preventDefault() };
+        event.cancelBubble = true;
+        event.returnValue = false;
+
         playlistService.deleteVideo(videoId)
         .then(function() {
             _.remove(vm.playlist.videos, function(video) {
