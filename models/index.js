@@ -13,7 +13,8 @@ var sequelize  = new Sequelize(
         host: dbConfig.host,
         dialect: "postgres",
         returning: true,
-        omitNull: true
+        omitNull: true,
+        logging: dbConfig.logging
     }
 );
 var models = {};

@@ -12,4 +12,5 @@ test:
         user: username
         password: password
         database: dbtest
+        logging: false
     youtubeKey: gibberishgibberish
