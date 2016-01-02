@@ -19,7 +19,8 @@
     "pg": "^4.4.3",
     "pg-hstore": "^2.3.2",
     "q": "^1.4.1",
-    "sequelize": "^3.15.1"
+    "sequelize": "^3.15.1",
+    "twilio": "^2.8.0"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.8",

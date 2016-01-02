@@ -5,11 +5,12 @@ var views      = require('co-views');
 var Playlist   = require('./services/playlists');
 var Video      = require('./services/videos');
 var yamlConfig = require('node-yaml-config');
-var youtubeKey = yamlConfig.load(__dirname + '/config/config.yml').youtubeKey;
+var config     = yamlConfig.load(__dirname + '/config/config.yml');
 
 var config = JSON.stringify({
-    youtubeKey: youtubeKey
+    youtubeKey: config.youtubeKey
 });
+var twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 var render = views('views/', {
     map: {
@@ -45,7 +46,6 @@ module.exports = function(app) {
         this.body = yield {
             playlist: playlist
         };
-
     })
     .get('/playlists/get/:id', function *(next) {
         yield next;
@@ -66,6 +66,13 @@ module.exports = function(app) {
         yield next;
         this.body = this.request.body;
         yield Video.destroy(this.params.id);
+    })
+    .post('/text', function *(next) {
+        yield next;
+        var match = /(^\d+)\s([^-]+)-\s(.+)$/.exec(this.request.body.Body);
+        var playlistId = match[1];
+        var songTitle  = match[2];
+        var songArtist = match[3];
     });
 
     app.use(router.routes());
