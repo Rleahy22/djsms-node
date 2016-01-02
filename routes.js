@@ -3,6 +3,7 @@
 var router     = require("koa-router")();
 var views      = require('co-views');
 var Playlist   = require('./services/playlists');
+var Text       = require('./services/texts');
 var Video      = require('./services/videos');
 var yamlConfig = require('node-yaml-config');
 var config     = yamlConfig.load(__dirname + '/config/config.yml');
@@ -10,7 +11,7 @@ var config     = yamlConfig.load(__dirname + '/config/config.yml');
 var config = JSON.stringify({
     youtubeKey: config.youtubeKey
 });
-var twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+var twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN); // jshint ignore:line
 
 var render = views('views/', {
     map: {
@@ -69,10 +70,25 @@ module.exports = function(app) {
     })
     .post('/text', function *(next) {
         yield next;
-        var match = /(^\d+)\s([^-]+)-\s(.+)$/.exec(this.request.body.Body);
+        var match = /(^\d+)\s(.+)$/.exec(this.request.body.Body);
         var playlistId = match[1];
-        var songTitle  = match[2];
-        var songArtist = match[3];
+        var query      = match[2];
+        var playlist   = yield Playlist.retrieve(playlistId);
+        var result     = yield Text.search(query);
+
+        var body = {
+            playlist: playlist,
+            video: {
+                thumbnail: result.snippet.thumbnails.default.url,
+                title: result.snippet.title,
+                videoid: result.id.videoId
+            }
+        };
+
+        var updatedPlaylist = yield Playlist.update(body);
+        this.body = yield {
+            playlist: updatedPlaylist
+        };
     });
 
     app.use(router.routes());

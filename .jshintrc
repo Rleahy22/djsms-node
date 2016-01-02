@@ -7,13 +7,13 @@
     "undef": true,
     "unused": true,
     "globals": {
-        "angular": true,
-        "module": true,
-        "require": true,
-        "console": true,
         "__dirname": true,
-        "YT": true,
+        "angular": true,
+        "console": true,
+        "exports": true,
+        "module": true,
         "process": true,
-        "exports": true
+        "require": true,
+        "YT": true
     }
 }
