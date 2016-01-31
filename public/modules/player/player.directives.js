@@ -88,11 +88,15 @@ function youtubePlayer($window, _) {
             scope.player.loadPlaylist(scope.playerPlaylist, currentIndex, currentTime);
         }
 
-        // scope.$watch('playlist.videos.length', function() {
-        //     if (scope.ready) {
-        //         scope.updatePlaylist();
-        //     }
-        // });
+        scope.$watch('updatedPlaylist.videos.length', function() {
+            if (scope.updatedPlaylist && scope.player.getPlayerState) {
+                if (scope.player.getPlayerState() !== 1) {
+                    scope.playlist = scope.updatedPlaylist;
+                    scope.updatedPlaylist = undefined;
+                    scope.updatePlaylist();
+                }
+            }
+        });
 
         scope.$watch('playlist.activeVideo', function() {
             if (scope.playlist && scope.ready) {
