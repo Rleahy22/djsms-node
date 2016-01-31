@@ -3,9 +3,9 @@
 angular.module('app')
 .factory('playlistService', playlistService);
 
-playlistService.$inject = ['$http', '$q'];
+playlistService.$inject = ['$http', '$q', 'configService'];
 
-function playlistService($http, $q) {
+function playlistService($http, $q, configService) {
     var service = {
         addVideo:    addVideo,
         create:      create,
@@ -17,7 +17,7 @@ function playlistService($http, $q) {
 
     function addVideo(playlist, video) {
         var updatePromise = $q.defer();
-        var url = "http://localhost:20001/playlists/" + playlist.id;
+        var url = configService.baseUrl + "playlists/" + playlist.id;
 
         $http.put(url, {
             playlist: playlist,
@@ -34,7 +34,7 @@ function playlistService($http, $q) {
 
     function create(title) {
         var createPromise = $q.defer();
-        var url = "http://localhost:20001/playlists/create";
+        var url = configService.baseUrl + "playlists/create";
 
         $http.post(url, {title: title})
         .then(function(response) {
@@ -48,7 +48,7 @@ function playlistService($http, $q) {
 
     function deleteVideo(videoId) {
         var deletePromise = $q.defer();
-        var url = "http://localhost:20001/videos/" + videoId;
+        var url = configService.baseUrl + "videos/" + videoId;
 
         $http.delete(url)
         .then(function(response) {
@@ -62,7 +62,7 @@ function playlistService($http, $q) {
 
     function retrieve(playlistId) {
         var retrievePromise = $q.defer();
-        var url = "http://localhost:20001/playlists/get/" + playlistId;
+        var url = configService.baseUrl + "playlists/get/" + playlistId;
 
         $http.get(url)
         .then(function(response) {
@@ -76,7 +76,7 @@ function playlistService($http, $q) {
 
     function retrieveAll() {
         var retrieveAllPromise = $q.defer();
-        var url = "http://localhost:20001/playlists/all";
+        var url = configService.baseUrl + "playlists/all";
 
         $http.get(url)
         .then(function(response) {

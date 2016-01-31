@@ -5,13 +5,15 @@ var views      = require('co-views');
 var Playlist   = require('./services/playlists');
 var Text       = require('./services/texts');
 var Video      = require('./services/videos');
-var yamlConfig = require('node-yaml-config');
-var config     = yamlConfig.load(__dirname + '/config/config.yml');
+var config     = require('./config/config')();
 
 var config = JSON.stringify({
+    baseUrl: config.baseUrl,
     youtubeKey: config.youtubeKey
 });
-var twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN); // jshint ignore:line
+
+// jshint ignore:next
+var twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
 var render = views('views/', {
     map: {

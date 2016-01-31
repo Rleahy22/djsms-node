@@ -28,6 +28,7 @@ describe("youtubePlayer", function() {
     beforeEach(function() {
         bard.appModule('app', function($provide) {
             $provide.value('configService', {
+                baseUrl: "http://localhost:20001/",
                 youtubeKey: 'fakeKey'
             });
             $provide.value('lodash', _);

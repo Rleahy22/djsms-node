@@ -7,6 +7,7 @@ var less       = require('koa-less');
 var serve      = require('koa-static');
 var http       = require('http');
 var socketIO   = require('socket.io');
+var config     = require('./config/config')();
 
 var app = koa();
 
@@ -26,8 +27,8 @@ var io     = socketIO(server);
 
 router(app, io);
 
-server.listen(20001, function() {
-    console.log('Listening on port 20001');
+server.listen(config.port || 20001, function() {
+    console.log('Listening on port %s', config.port || "20001");
 });
 
 process.on('uncaughtException', function (err) {

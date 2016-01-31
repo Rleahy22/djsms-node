@@ -2,8 +2,7 @@
 
 var fs         = require('fs');
 var path       = require('path');
-var yamlConfig = require('node-yaml-config');
-var dbConfig   = yamlConfig.load(__dirname + '/../config/config.yml').db;
+var dbConfig   = require('./../config/config')().db;
 var Sequelize  = require('sequelize');
 var sequelize  = new Sequelize(
     dbConfig.database,
@@ -29,7 +28,6 @@ fs.readdirSync(__dirname + '/')
 });
 
 Object.keys(models).forEach(function (modelName) {
-    console.log(modelName);
     if (models[modelName].options.hasOwnProperty('associate')) {
         models[modelName].options.associate(models);
     }

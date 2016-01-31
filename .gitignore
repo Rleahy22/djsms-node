@@ -2,5 +2,5 @@ node_modules/*
 public/bower_components/*
 public/**/*.css
 coverage/*
-config/config.yml
+config/config.js
 npm-debug.log

@@ -3,7 +3,7 @@
 var request    = require("request");
 var _          = require("lodash");
 var Q          = require("q");
-var youtubeKey = require("node-yaml-config").load(__dirname + '/../config/config.yml').youtubeKey;
+var youtubeKey = require('./../config/config')().youtubeKey;
 
 var search = function *(query) {
     var searchPromise = Q.defer();
