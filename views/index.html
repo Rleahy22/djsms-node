@@ -7,12 +7,15 @@
     <link rel="stylesheet" href="public/modules/player/player.css">
     <link rel="stylesheet" href="public/modules/playlist/playlists.css">
 
+    <script src="../jspm_packages/system.js"></script>
+    <script src="../config/config.js"></script>
     <script src="../node_modules/lodash/index.js"></script>
     <script src="../node_modules/angular/angular.js"></script>
     <script src="../node_modules/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="../node_modules/angular-animate/angular-animate.js"></script>
     <script src="../node_modules/angular-aria/angular-aria.js"></script>
     <script src="../node_modules/angular-material/angular-material.js"></script>
+    <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
 
     <script src="https://www.youtube.com/player_api"></script>
     <script src="public/app.module.js"></script>
@@ -24,6 +27,7 @@
     <script src="public/modules/player/playerSearch.services.js"></script>
     <script src="public/modules/playlist/playlists.controllers.js"></script>
     <script src="public/modules/playlist/playlist.services.js"></script>
+    <script src="public/modules/websocket/websocket.services.js"></script>
     <script>window.config.app = {{{ config }}};</script>
 </head>
 <body>

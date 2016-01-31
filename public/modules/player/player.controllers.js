@@ -3,9 +3,9 @@
 angular.module('app')
 .controller('PlayerCtrl', PlayerCtrl);
 
-PlayerCtrl.$inject = ['$stateParams', 'youtubeSearch', 'playlistService', 'lodash'];
+PlayerCtrl.$inject = ['$stateParams', 'youtubeSearch', 'playlistService', 'lodash', 'websocket'];
 
-function PlayerCtrl($stateParams, youtubeSearch, playlistService, _) {
+function PlayerCtrl($stateParams, youtubeSearch, playlistService, _, websocket) {
     var vm = this;
 
     vm.addVideoToPlaylist = addVideoToPlaylist;
@@ -15,8 +15,12 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService, _) {
     vm.search             = search;
     vm.searchResult       = {};
     vm.updatedPlaylist    = undefined;
+    vm.websocket          = websocket;
 
     activate();
+    vm.websocket.on('news', function (data) {
+        console.log(data);
+    });
 
     function activate() {
         playlistService.retrieve(vm.playlistId)
