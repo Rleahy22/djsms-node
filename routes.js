@@ -19,7 +19,14 @@ var render = views('views/', {
     }
 });
 
-module.exports = function(app) {
+module.exports = function(app, io) {
+    var Socket;
+
+    io.on('connection', function (socket) {
+        console.log('connection established');
+        Socket = socket;
+    });
+
     router.get('/playlists/', function *(next) {
         yield next;
         this.body = yield render('index', {
@@ -85,10 +92,13 @@ module.exports = function(app) {
             }
         };
 
-        var updatedPlaylist = yield Playlist.update(body);
-        this.body = yield {
-            playlist: updatedPlaylist
-        };
+        Socket.emit('text', {
+            video: {
+                thumbnail: result.snippet.thumbnails.default.url,
+                title: result.snippet.title,
+                videoid: result.id.videoId
+            }
+        });
     });
 
     app.use(router.routes());

@@ -21,14 +21,10 @@ app.use(function *(next) {
   console.log('%s %s - %s ms', this.method, this.url, ms);
 });
 
-router(app);
-
 var server = http.createServer(app.callback());
 var io     = socketIO(server);
 
-io.on('connection', function (socket) {
-    socket.emit('news', { hello: 'world' });
-});
+router(app, io);
 
 server.listen(20001, function() {
     console.log('Listening on port 20001');

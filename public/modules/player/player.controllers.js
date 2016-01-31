@@ -16,16 +16,25 @@ function PlayerCtrl($stateParams, youtubeSearch, playlistService, _, websocket) 
     vm.searchResult       = {};
     vm.updatedPlaylist    = undefined;
     vm.websocket          = websocket;
+    
+    vm.websocket.on('text', function (data) {
+        addSocketVideoToPlaylist(data.video);
+    });
 
     activate();
-    vm.websocket.on('news', function (data) {
-        console.log(data);
-    });
 
     function activate() {
         playlistService.retrieve(vm.playlistId)
         .then(function(result) {
             vm.playlist = result;
+        });
+    }
+
+    function addSocketVideoToPlaylist(textSearchResult) {
+        vm.playlist.videos.push(textSearchResult);
+        playlistService.addVideo(vm.playlist, textSearchResult)
+        .then(function(result) {
+            vm.updatedPlaylist = result;
         });
     }
 
