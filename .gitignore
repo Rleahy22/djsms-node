@@ -3,4 +3,5 @@ public/bower_components/*
 public/**/*.css
 coverage/*
 config/config.js
+config/*.pem
 npm-debug.log
