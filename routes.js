@@ -12,8 +12,7 @@ var config = JSON.stringify({
     youtubeKey: config.youtubeKey
 });
 
-// jshint ignore:next
-var twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+var twilio = require('twilio')(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);  // jshint ignore:line
 
 var render = views('views/', {
     map: {

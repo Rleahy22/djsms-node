@@ -1,12 +1,12 @@
-"use strict";
-
 (function() {
+    "use strict";
+
     angular.module('app')
-    .factory('websocket', websocket);
+    .service('websocketService', websocketService);
 
-    websocket.$inject = ['$window'];
+    websocketService.$inject = ['$window'];
 
-    function websocket($window) {
+    function websocketService($window) {
         var socket = $window.io.connect();
 
         return socket;

@@ -23,7 +23,7 @@ describe("PlayerCtrl", function() {
             $provide.value('$stateParams', {
                 playlistId: 1
             });
-            $provide.value('websocket', {
+            $provide.value('websocketService', {
                 on: function() {
                     return;
                 }
