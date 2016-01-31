@@ -27,10 +27,7 @@ var server = http.createServer(app.callback());
 var io     = socketIO(server);
 
 io.on('connection', function (socket) {
-    setTimeout(function() {
-        console.log("NOW");
-        socket.emit('news', { hello: 'world' });
-    }, 2000);
+    socket.emit('news', { hello: 'world' });
 });
 
 server.listen(20001, function() {

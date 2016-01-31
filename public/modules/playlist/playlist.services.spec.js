@@ -1,8 +1,8 @@
 "use strict";
 
 describe("playlistService", function() {
-    var baseUrl         = "http://localhost:8000/playlists/";
-    var baseVideoUrl    = "http://localhost:8000/videos/";
+    var baseUrl         = "http://localhost:20001/playlists/";
+    var baseVideoUrl    = "http://localhost:20001/videos/";
     var allPlaylistsUrl = baseUrl + "all";
     var newTestPlaylist = {
         id: 42,

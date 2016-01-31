@@ -4,8 +4,10 @@
     angular.module('app')
     .factory('websocket', websocket);
 
-    function websocket() {
-        var socket = io.connect();
+    websocket.$inject = ['$window'];
+
+    function websocket($window) {
+        var socket = $window.io.connect();
 
         return socket;
     }

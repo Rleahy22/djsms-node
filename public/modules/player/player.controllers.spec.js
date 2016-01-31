@@ -22,6 +22,12 @@ describe("PlayerCtrl", function() {
             $provide.value('$stateParams', {
                 playlistId: 1
             });
+            $provide.value('websocket', {
+                on: function() {
+                    return;
+                }
+            });
+            $provide.value('lodash', _);
         });
 
         bard.inject(this, '$controller', '$q', '$rootScope', '$httpBackend', 'youtubeSearch', 'playlistService');
