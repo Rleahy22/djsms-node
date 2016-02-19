@@ -48,10 +48,11 @@ describe("PlayerCtrl", function() {
         });
 
         bard.mockService(playlistService, {
-            retrieve: $q.when(testPlaylist),
-            addVideo: $q.when(function(playlist, newVideo) {
+            addVideo:    $q.when(function(playlist, newVideo) {
                 return playlist.push(newVideo);
-            })
+            }),
+            deleteVideo: $q.when(),
+            retrieve:    $q.when(testPlaylist)
         });
 
         $httpBackend.when('GET', playlistGetUrl).respond(function() {
@@ -117,6 +118,30 @@ describe("PlayerCtrl", function() {
             $rootScope.$apply();
             expect(vm.updatedPlaylist.length).toEqual(2);
         });
+    });
+
+    describe('deleteVideo', function() {
+        it('should prevent any event propagation', function() {
+            var testEvent = {
+                stopPropagation: sinon.spy(),
+                preventDefault:  sinon.spy()
+            };
+
+            vm.deleteVideo(481516, testEvent);
+
+            expect(testEvent.stopPropagation.calledOnce).toEqual(true);
+            expect(testEvent.preventDefault.calledOnce).toEqual(true);
+        });
+
+        it('should call remove video from playlist', function() {
+            $rootScope.$apply();
+            expect(vm.playlist.videos.length).toEqual(4);
+
+            vm.deleteVideo(1, {});
+
+            $rootScope.$apply();
+            expect(vm.playlist.videos.length).toEqual(4);
+        })
     });
 
     describe("playVideo", function() {
