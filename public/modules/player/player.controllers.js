@@ -8,14 +8,15 @@ PlayerCtrl.$inject = ['$stateParams', 'youtubeSearch', 'playlistService', 'lodas
 function PlayerCtrl($stateParams, youtubeSearch, playlistService, _, websocketService) {
     var vm = this;
 
-    vm.addVideoToPlaylist = addVideoToPlaylist;
-    vm.deleteVideo        = deleteVideo;
-    vm.playlistId         = $stateParams.playlistId;
-    vm.playVideo          = playVideo;
-    vm.search             = search;
-    vm.searchResult       = {};
-    vm.updatedPlaylist    = undefined;
-    vm.websocket          = websocketService;
+    vm.addVideoToPlaylist       = addVideoToPlaylist;
+    vm.addSocketVideoToPlaylist = addSocketVideoToPlaylist;
+    vm.deleteVideo              = deleteVideo;
+    vm.playlistId               = $stateParams.playlistId;
+    vm.playVideo                = playVideo;
+    vm.search                   = search;
+    vm.searchResult             = {};
+    vm.updatedPlaylist          = undefined;
+    vm.websocket                = websocketService;
     
     vm.websocket.on('text', function (data) {
         addSocketVideoToPlaylist(data.video);

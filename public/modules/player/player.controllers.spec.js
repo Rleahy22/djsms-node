@@ -49,7 +49,9 @@ describe("PlayerCtrl", function() {
 
         bard.mockService(playlistService, {
             retrieve: $q.when(testPlaylist),
-            addVideo: $q.when()
+            addVideo: $q.when(function(playlist, newVideo) {
+                return playlist.push(newVideo);
+            })
         });
 
         $httpBackend.when('GET', playlistGetUrl).respond(function() {
@@ -83,6 +85,37 @@ describe("PlayerCtrl", function() {
             vm.addVideoToPlaylist();
             expect(vm.playlist.videos.length).toEqual(2);
             expect(vm.playlist.videos[1].title).toEqual(testVideo.title);
+        });
+    });
+
+    describe('addSocketVideoToPlaylist', function() {
+        it('should add the text result from websocket to playlist', function() {
+            $rootScope.$apply();
+
+            expect(vm.playlist.videos.length).toEqual(2);
+            vm.addSocketVideoToPlaylist({
+                videoId: 42,
+                title: "Socket Video",
+                thumbnail: "http://socket.com/socket.png"
+            });
+
+            expect(vm.playlist.videos.length).toEqual(3);
+            expect(vm.playlist.videos[2].title).toEqual('Socket Video');
+        });
+
+        it('should call playlistService.addVideo', function() {
+            $rootScope.$apply();
+
+            expect(vm.playlist.videos.length).toEqual(3);
+            vm.addSocketVideoToPlaylist({
+                videoId: 42,
+                title: "Socket Video",
+                thumbnail: "http://socket.com/socket.png"
+            });
+
+            expect(vm.updatedPlaylist).toEqual(undefined);
+            $rootScope.$apply();
+            expect(vm.updatedPlaylist.length).toEqual(2);
         });
     });
 
