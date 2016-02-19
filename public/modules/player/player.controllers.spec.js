@@ -141,7 +141,7 @@ describe("PlayerCtrl", function() {
 
             $rootScope.$apply();
             expect(vm.playlist.videos.length).toEqual(4);
-        })
+        });
     });
 
     describe("playVideo", function() {

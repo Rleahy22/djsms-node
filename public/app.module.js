@@ -1,6 +1,8 @@
-"use strict";
+(function() {
+    "use strict";
 
-angular.module('app', [
-    'ui.router',
-    'ngMaterial'
-]);
+    angular.module('app', [
+        'ui.router',
+        'ngMaterial'
+    ]);
+})();

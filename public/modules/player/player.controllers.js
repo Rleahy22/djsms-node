@@ -1,84 +1,86 @@
-"use strict";
+(function() {
+    "use strict";
 
-angular.module('app')
-.controller('PlayerCtrl', PlayerCtrl);
+    angular.module('app')
+    .controller('PlayerCtrl', PlayerCtrl);
 
-PlayerCtrl.$inject = ['$stateParams', 'youtubeSearch', 'playlistService', 'lodash', 'websocketService'];
+    PlayerCtrl.$inject = ['$stateParams', 'youtubeSearch', 'playlistService', 'lodash', 'websocketService'];
 
-function PlayerCtrl($stateParams, youtubeSearch, playlistService, _, websocketService) {
-    var vm = this;
+    function PlayerCtrl($stateParams, youtubeSearch, playlistService, _, websocketService) {
+        var vm = this;
 
-    vm.addVideoToPlaylist       = addVideoToPlaylist;
-    vm.addSocketVideoToPlaylist = addSocketVideoToPlaylist;
-    vm.deleteVideo              = deleteVideo;
-    vm.playlistId               = $stateParams.playlistId;
-    vm.playVideo                = playVideo;
-    vm.search                   = search;
-    vm.searchResult             = {};
-    vm.updatedPlaylist          = undefined;
-    vm.websocket                = websocketService;
-    
-    vm.websocket.on('text', function (data) {
-        addSocketVideoToPlaylist(data.video);
-    });
-
-    activate();
-
-    function activate() {
-        playlistService.retrieve(vm.playlistId)
-        .then(function(result) {
-            vm.playlist = result;
+        vm.addVideoToPlaylist       = addVideoToPlaylist;
+        vm.addSocketVideoToPlaylist = addSocketVideoToPlaylist;
+        vm.deleteVideo              = deleteVideo;
+        vm.playlistId               = $stateParams.playlistId;
+        vm.playVideo                = playVideo;
+        vm.search                   = search;
+        vm.searchResult             = {};
+        vm.updatedPlaylist          = undefined;
+        vm.websocket                = websocketService;
+        
+        vm.websocket.on('text', function (data) {
+            addSocketVideoToPlaylist(data.video);
         });
-    }
 
-    function addSocketVideoToPlaylist(textSearchResult) {
-        vm.playlist.videos.push(textSearchResult);
-        playlistService.addVideo(vm.playlist, textSearchResult)
-        .then(function(result) {
-            vm.updatedPlaylist = result;
-        });
-    }
+        activate();
 
-    function addVideoToPlaylist() {
-        vm.playlist.videos.push(vm.searchResult);
-        playlistService.addVideo(vm.playlist, vm.searchResult)
-        .then(function(result) {
-            vm.searchText = null;
-            vm.searchResult = null;
-            vm.updatedPlaylist = result;
-        });
-    }
-
-    function deleteVideo(videoId, event) {
-        if (event.stopPropagation) { event.stopPropagation(); }
-        if (event.preventDefault) { event.preventDefault(); }
-        event.cancelBubble = true;
-        event.returnValue = false;
-
-        playlistService.deleteVideo(videoId)
-        .then(function() {
-            _.remove(vm.playlist.videos, function(video) {
-                return video.id === videoId;
-            });
-        });
-    }
-
-    function playVideo(index) {
-        vm.playlist.activeVideo = index;
-    }
-
-    function search() {
-        if (vm.searchText) {
-            youtubeSearch.search(vm.searchText)
+        function activate() {
+            playlistService.retrieve(vm.playlistId)
             .then(function(result) {
-                vm.searchResult = {
-                    thumbnail: result.snippet.thumbnails.default.url,
-                    title: result.snippet.title,
-                    videoid: result.id.videoId
-                };
+                vm.playlist = result;
             });
-        } else {
-            vm.searchResult = null;
+        }
+
+        function addSocketVideoToPlaylist(textSearchResult) {
+            vm.playlist.videos.push(textSearchResult);
+            playlistService.addVideo(vm.playlist, textSearchResult)
+            .then(function(result) {
+                vm.updatedPlaylist = result;
+            });
+        }
+
+        function addVideoToPlaylist() {
+            vm.playlist.videos.push(vm.searchResult);
+            playlistService.addVideo(vm.playlist, vm.searchResult)
+            .then(function(result) {
+                vm.searchText = null;
+                vm.searchResult = null;
+                vm.updatedPlaylist = result;
+            });
+        }
+
+        function deleteVideo(videoId, event) {
+            if (event.stopPropagation) { event.stopPropagation(); }
+            if (event.preventDefault) { event.preventDefault(); }
+            event.cancelBubble = true;
+            event.returnValue = false;
+
+            playlistService.deleteVideo(videoId)
+            .then(function() {
+                _.remove(vm.playlist.videos, function(video) {
+                    return video.id === videoId;
+                });
+            });
+        }
+
+        function playVideo(index) {
+            vm.playlist.activeVideo = index;
+        }
+
+        function search() {
+            if (vm.searchText) {
+                youtubeSearch.search(vm.searchText)
+                .then(function(result) {
+                    vm.searchResult = {
+                        thumbnail: result.snippet.thumbnails.default.url,
+                        title: result.snippet.title,
+                        videoid: result.id.videoId
+                    };
+                });
+            } else {
+                vm.searchResult = null;
+            }
         }
     }
-}
+})();

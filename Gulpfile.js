@@ -15,7 +15,7 @@ gulp.task('pre-test', function () {
   return gulp.src([
         'app.js',
         'routes.js',
-        'services/*.js',
+        'services/**/*.js',
         'models/**/*.js'
     ])
         .pipe(istanbul())
