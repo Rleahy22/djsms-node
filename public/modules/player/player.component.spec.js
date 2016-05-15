@@ -1,138 +1,163 @@
 "use strict";
 
-describe("youtubePlayer", function() {
-    var elm, testScope, isolateScope;
-    var testState = 1;
-    var exampleUpdatedPlaylist = {
+describe("PlayerCtrl", function() {
+    let elm, testScope, isolateScope;
+    var baseUrl        = "http://localhost:8000/";
+    var playlistGetUrl = baseUrl + "playlists/get/1";
+    var testVideo = {
+        videoId: 481516,
+        title: "Test Title",
+        thumbnail: "http://test.com/image.png"
+    };
+    var testPlaylist = {
         title: "Test Playlist",
-        videos: [
-            {
-                videoId: 'M7lc1UVf-VE',
-                title: 'YouTube Developers Live: Embedded Web Player Customization',
-                thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
-            },
-            {
-                videoId: 'tnXO-i7944M',
-                title: 'Dan Wahlin - AngularJS in 20ish Minutes - NG-Conf 2014',
-                thumbnail: 'https://i.ytimg.com/vi/i9MHigUZKEM/default.jpg'
-            },
-            {
-                videoId: 'M7lc1UVf-VE',
-                title: 'YouTube Developers Live: Embedded Web Player Customization',
-                thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
-            }
-        ]
+        videos: [testVideo]
     };
 
-    beforeEach(module("templates"));
     beforeEach(function() {
         bard.appModule('app', function($provide) {
             $provide.value('configService', {
                 baseUrl: "http://localhost:20001/",
                 youtubeKey: 'fakeKey'
             });
+            $provide.value('$stateParams', {
+                playlistId: 1
+            });
+            $provide.value('websocketService', {
+                on: function() {
+                    return;
+                }
+            });
             $provide.value('lodash', _);
         });
 
-        bard.inject(function($window, $rootScope, $compile) {
+        bard.inject(function($rootScope, $compile) {
+            console.log('HERE');
             testScope = $rootScope;
-            elm = angular.element('<youtube-player playlist="playlist"></youtube-player>');
-
-            testScope.playlist = {
-                title: "Test Playlist",
-                videos: [
-                    {
-                        videoId: 'M7lc1UVf-VE',
-                        title: 'YouTube Developers Live: Embedded Web Player Customization',
-                        thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
-                    },
-                    {
-                        videoId: 'tnXO-i7944M',
-                        title: 'Dan Wahlin - AngularJS in 20ish Minutes - NG-Conf 2014',
-                        thumbnail: 'https://i.ytimg.com/vi/i9MHigUZKEM/default.jpg'
-                    }
-                ]
-            };
-
+            elm = angular.element('<player></player>');
             $compile(elm)(testScope);
+            console.log(elm);
             testScope.$digest();
-            elm.isolateScope().$ctrl.player = {
-                cuePlaylist: sinon.spy(),
-                getCurrentTime: function() {
-                    return 42;
-                },
-                getPlayerState: function() {
-                    return testState;
-                },
-                getPlaylistIndex: function() {
-                    return 4;
-                },
-                loadPlaylist: sinon.spy(),
-                playVideoAt: sinon.spy()
-            };
             isolateScope = elm.isolateScope().$ctrl;
         });
+
+        bard.mockService(youtubeSearch, {
+            search: $q.when({
+                id: {
+                    videoId: testVideo.videoId
+                },
+                snippet: {
+                    title: testVideo.title,
+                    thumbnails: {
+                        default: testVideo.thumbnail
+                    }
+                }
+            })
+        });
+
+        bard.mockService(playlistService, {
+            addVideo:    $q.when(function(playlist, newVideo) {
+                return playlist.push(newVideo);
+            }),
+            deleteVideo: $q.when(),
+            retrieve:    $q.when(testPlaylist)
+        });
+
+        $httpBackend.when('GET', playlistGetUrl).respond(function() {
+            return [200, testPlaylist, {}];
+        });
+
     });
 
-    describe("addVideosToPlaylist", function() {
-        it("should add the playlist to youtubePlayer", function() {
-            isolateScope.addVideosToPlaylist();
+    describe("search", function() {
+        it("should return a youtube video object", function() {
+            isolateScope.searchText = "Test Query";
+            isolateScope.search();
+            $rootScope.$apply();
+            expect(isolateScope.searchResult.videoid).toEqual(481516);
+        });
 
-            expect(isolateScope.player.cuePlaylist.calledWith(isolateScope.playerPlaylist)).toEqual(true);
+        it("should not call youtubeSearch service#search if searchtext is undefined", function() {
+            isolateScope.searchText = undefined;
+            isolateScope.search();
+            expect(isolateScope.searchResult).toEqual(null);
         });
     });
 
-    describe("updatePlaylist", function() {
-        it("should load a new playlist in the youtube player", function() {
-            isolateScope.updatePlaylist();
+    describe("addVideoToPlaylist", function() {
+        it("should add video from search results to playlist", function() {
+            isolateScope.searchResult = testVideo;
+            $rootScope.$apply();
 
-            expect(isolateScope.player.loadPlaylist.calledWith(
-                isolateScope.playerPlaylist,
-                4,
-                42
-            )).toEqual(true);
+            expect(isolateScope.playlist.videos.length).toEqual(1);
+            isolateScope.addVideoToPlaylist();
+            expect(isolateScope.playlist.videos.length).toEqual(2);
+            expect(isolateScope.playlist.videos[1].title).toEqual(testVideo.title);
         });
     });
 
-    describe("onPlayerReady", function() {
-        it("should set ready to true", function() {
-            expect(isolateScope.ready).toEqual(false);
-            isolateScope.onPlayerReady();
-            expect(isolateScope.ready).toEqual(true);
-        });
-    });
+    describe('addSocketVideoToPlaylist', function() {
+        it('should add the text result from websocket to playlist', function() {
+            $rootScope.$apply();
 
-    describe("onStateChange", function() {
-        it("should set update playlist.activeVideo", function() {
-            expect(isolateScope.playlist.activeVideo).toEqual(undefined);
-            isolateScope.onStateChange();
-            expect(isolateScope.playlist.activeVideo).toEqual(4);
+            expect(isolateScope.playlist.videos.length).toEqual(2);
+            isolateScope.addSocketVideoToPlaylist({
+                videoId: 42,
+                title: "Socket Video",
+                thumbnail: "http://socket.com/socket.png"
+            });
+
+            expect(isolateScope.playlist.videos.length).toEqual(3);
+            expect(isolateScope.playlist.videos[2].title).toEqual('Socket Video');
         });
 
-        it("should load updated playlist on song change if available", function() {
-            isolateScope.playlist.activeVideo = 3;
-            isolateScope.updatedPlaylist = exampleUpdatedPlaylist;
-            isolateScope.onStateChange();
-            expect(isolateScope.playlist).toEqual(exampleUpdatedPlaylist);
+        it('should call playlistService.addVideo', function() {
+            $rootScope.$apply();
+
+            expect(isolateScope.playlist.videos.length).toEqual(3);
+            isolateScope.addSocketVideoToPlaylist({
+                videoId: 42,
+                title: "Socket Video",
+                thumbnail: "http://socket.com/socket.png"
+            });
+
             expect(isolateScope.updatedPlaylist).toEqual(undefined);
+            $rootScope.$apply();
+            expect(isolateScope.updatedPlaylist.length).toEqual(2);
         });
     });
 
-    describe("change video", function() {
-        it("should change player to selected video", function() {
-            isolateScope.changeVideo(2);
-            expect(isolateScope.player.playVideoAt.calledWith(2)).toEqual(true);
+    describe('deleteVideo', function() {
+        it('should prevent any event propagation', function() {
+            var testEvent = {
+                stopPropagation: sinon.spy(),
+                preventDefault:  sinon.spy()
+            };
+
+            isolateScope.deleteVideo(481516, testEvent);
+
+            expect(testEvent.stopPropagation.calledOnce).toEqual(true);
+            expect(testEvent.preventDefault.calledOnce).toEqual(true);
+        });
+
+        it('should call remove video from playlist', function() {
+            $rootScope.$apply();
+            expect(isolateScope.playlist.videos.length).toEqual(4);
+
+            isolateScope.deleteVideo(1, {});
+
+            $rootScope.$apply();
+            expect(isolateScope.playlist.videos.length).toEqual(4);
         });
     });
 
-    describe("changes to playlist activeVideo", function() {
-        it("should call updatePlaylist", function() {
-            isolateScope.changeVideo = sinon.spy();
-            isolateScope.ready = true;
-            isolateScope.playlist.activeVideo = 1;
-            testScope.$apply();
+    describe("playVideo", function() {
+        it("should set activeVideo to selected video", function() {
+            $rootScope.$apply();
 
-            expect(isolateScope.changeVideo.calledOnce).toEqual(true);
+            expect(isolateScope.playlist.activeVideo).toEqual(undefined);
+            isolateScope.playVideo(1);
+            expect(isolateScope.playlist.activeVideo).toEqual(1);
         });
     });
 });

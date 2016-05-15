@@ -19,8 +19,7 @@
             })
             .state('layout.playlist', {
                 url: 'playlists/:playlistId',
-                templateUrl: '/public/modules/player/player.html',
-                controller: 'PlayerCtrl as player'
+                templateUrl: '/public/modules/player/player.html'
             });
 
         $urlRouterProvider.otherwise("/");

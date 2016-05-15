@@ -1,108 +1,147 @@
 (function() {
     "use strict";
 
-    var componentRegistry = {
-        bindings: {
-            activeVideo:     '=',
-            playlist:        '=',
-            updatedPlaylist: '='
-        },
-        controller: controller,
-        template: '<div id="ytplayer"></div>'
+    const componentRegistry = {
+        bindings: {},
+        controller: PlayerCtrl,
+        template: `
+            <md-content layout="column" layout-padding role="main" class="md-accent djsms-player">
+                <md-toolbar>
+                    <div class="md-toolbar-tools">
+                        <h2 class="md-toolbar-item md-breadcrumb">
+                            <span><a ui-sref="layout.playlists">Playlists</a></span>
+                            <span class="seperator-icon">&gt;</span>
+                            <span md-breadcrumb-page>{{$ctrl.playlist.title}}</span>
+                        </h2>
+                    </div>
+                </md-toolbar>
+                <md-input-container class="youtube-search">
+                    <form ng-submit="$ctrl.addVideoToPlaylist($ctrl.searchResult.videoId)">
+                        <input
+                            type="text"
+                            ng-model="$ctrl.searchText"
+                            class="search-input"
+                            aria-label="Search Youtube"
+                            ng-keyup="$ctrl.search()"
+                            layout-align="center center"
+                            placeholder="Search for Song"
+                        >
+                    </form>
+                </md-input-container>
+                <md-button class="search-results" ng-if="$ctrl.searchResult.thumbnail" ng-click="$ctrl.addVideoToPlaylist($ctrl.searchResult.videoId)">
+                    <div layout="row" layout-align="center center">
+                        <img class="result-image" src="{{$ctrl.searchResult.thumbnail}}">
+                        <span class="result-text">{{$ctrl.searchResult.title}}</span>
+                    </div>
+                </md-button>
+                <youtube-player
+                    class="youtube-player"
+                    playlist="$ctrl.playlist"
+                    active-video="$ctrl.activeVideo"
+                    updated-playlist="$ctrl.updatedPlaylist"
+                    ng-show="$ctrl.playlist.videos.length"
+                    layout="column"
+                    layout-align="center center">
+                </youtube-player>
+                <md-list class="song-list">
+                    <md-list-item
+                        ng-repeat="video in $ctrl.playlist.videos track by $index"
+                        class="song-row md-default-theme"
+                        ng-class="{'md-accent': $index === $ctrl.playlist.activeVideo}"
+                        ng-click="$ctrl.playVideo($index)"
+                    >
+                        <img class="song-image" src="{{video.thumbnail}}">
+                        <span>{{video.title}}</span>
+                        <md-button ng-click="$ctrl.deleteVideo(video.id, $event)" class="song-delete-btn">X</md-button>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+        `
     };
 
-    function controller($scope, $window, _) {
+    function PlayerCtrl($stateParams, youtubeSearch, playlistService, _, websocketService) {
         var $ctrl = this;
 
-        $ctrl.addVideosToPlaylist = addVideosToPlaylist;
-        $ctrl.changeVideo         = changeVideo;
-        $ctrl.loadPlayer          = loadPlayer;
-        $ctrl.onPlayerReady       = onPlayerReady;
-        $ctrl.onStateChange       = onStateChange;
-        $ctrl.player              = {};
-        $ctrl.ready               = false;
-        $ctrl.updatePlaylist      = updatePlaylist;
+        $ctrl.addVideoToPlaylist       = addVideoToPlaylist;
+        $ctrl.addSocketVideoToPlaylist = addSocketVideoToPlaylist;
+        $ctrl.deleteVideo              = deleteVideo;
+        $ctrl.playlistId               = $stateParams.playlistId;
+        $ctrl.playVideo                = playVideo;
+        $ctrl.search                   = search;
+        $ctrl.searchResult             = {};
+        $ctrl.updatedPlaylist          = undefined;
+        $ctrl.websocket                = websocketService;
+
+        $ctrl.websocket.on('text', function (data) {
+            addSocketVideoToPlaylist(data.video);
+        });
 
         $ctrl.$onInit = function() {
-            /* istanbul ignore next */
-            if ($window.YT && $window.YT.loaded) {
-                $ctrl.loadPlayer();
-            } else {
-                $window.onYouTubePlayerAPIReady = function() {
-                    $ctrl.loadPlayer();
-                };
-            }
+            playlistService.retrieve($ctrl.playlistId)
+            .then(function(result) {
+                $ctrl.playlist = result;
+            });
         };
 
-        function addVideosToPlaylist() {
-            $ctrl.player.cuePlaylist($ctrl.playerPlaylist);
-        }
-
-        function changeVideo(index) {
-            var currentIndex = $ctrl.player.getPlaylistIndex();
-            if (currentIndex !== index) {
-                $ctrl.player.playVideoAt(index);
-            }
-        }
-
-        /* istanbul ignore next */
-        function loadPlayer() {
-            $ctrl.player = new YT.Player('ytplayer', {
-                playerVars: { 'autoplay': 1 },
-                events: {
-                    'onReady': $ctrl.onPlayerReady,
-                    'onStateChange': $ctrl.onStateChange
-                }
+        function addSocketVideoToPlaylist(textSearchResult) {
+            $ctrl.playlist.videos.push(textSearchResult);
+            playlistService.addVideo($ctrl.playlist, textSearchResult)
+            .then(function(result) {
+                $ctrl.updatedPlaylist = result;
             });
         }
 
-        function onPlayerReady() {
-            $ctrl.ready = true;
-            if (!(_.isEmpty($ctrl.playlist.videos))) {
-                $ctrl.playerPlaylist = _.pluck($ctrl.playlist.videos, 'videoid');
-                $ctrl.addVideosToPlaylist();
-            }
+        function addVideoToPlaylist() {
+            $ctrl.playlist.videos.push($ctrl.searchResult);
+            playlistService.addVideo($ctrl.playlist, $ctrl.searchResult)
+            .then(function(result) {
+                $ctrl.searchText = null;
+                $ctrl.searchResult = null;
+                $ctrl.updatedPlaylist = result;
+            });
         }
 
-        function onStateChange() {
-            var currentIndex = $ctrl.player.getPlaylistIndex();
+        function deleteVideo(videoId, event) {
+            if (event.stopPropagation) { event.stopPropagation(); }
+            if (event.preventDefault) { event.preventDefault(); }
+            event.cancelBubble = true;
+            event.returnValue = false;
 
-            if (currentIndex !== $ctrl.playlist.activeVideo && $ctrl.updatedPlaylist) {
-                $ctrl.playlist = $ctrl.updatedPlaylist;
-                $ctrl.updatedPlaylist = undefined;
-                $ctrl.updatePlaylist();
-            }
-
-            $ctrl.playlist.activeVideo = currentIndex;
-            $scope.$apply();
+            playlistService.deleteVideo(videoId)
+            .then(function() {
+                _.remove($ctrl.playlist.videos, function(video) {
+                    return video.id === videoId;
+                });
+            });
         }
 
-        function updatePlaylist() {
-            $ctrl.playerPlaylist = _.pluck($ctrl.playlist.videos, 'videoid');
-            var currentTime = $ctrl.player.getCurrentTime();
-            var currentIndex = $ctrl.player.getPlaylistIndex();
-            $ctrl.player.loadPlaylist($ctrl.playerPlaylist, currentIndex, currentTime);
+        function playVideo(index) {
+            $ctrl.playlist.activeVideo = index;
         }
 
-        $scope.$watch('$ctrl.updatedPlaylist.videos', function() {
-            if ($ctrl.updatedPlaylist && $ctrl.player.getPlayerState) {
-                if ($ctrl.player.getPlayerState() !== 1) {
-                    $ctrl.playlist = $ctrl.updatedPlaylist;
-                    $ctrl.updatedPlaylist = undefined;
-                    $ctrl.updatePlaylist();
-                }
+        function search() {
+            if ($ctrl.searchText) {
+                youtubeSearch.search($ctrl.searchText)
+                .then(function(result) {
+                    $ctrl.searchResult = {
+                        thumbnail: result.snippet.thumbnails.default.url,
+                        title: result.snippet.title,
+                        videoid: result.id.videoId
+                    };
+                });
+            } else {
+                $ctrl.searchResult = null;
             }
-        });
-
-        $scope.$watch('$ctrl.playlist.activeVideo', function() {
-            if ($ctrl.playlist && $ctrl.ready) {
-                $ctrl.changeVideo($ctrl.playlist.activeVideo);
-            }
-        });
+        }
     }
 
-    componentRegistry.$inject = ['$scope', '$window', 'lodash'];
+    componentRegistry.$inject = ['$stateParams',
+        'youtubeSearch',
+        'playlistService',
+        'lodash',
+        'websocketService'
+    ];
 
     angular.module('app')
-    .component('youtubePlayer', componentRegistry);
+    .component('player', componentRegistry);
 })();
