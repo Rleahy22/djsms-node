@@ -27,7 +27,7 @@
             <span class="result-text">{{player.searchResult.title}}</span>
         </div>
     </md-button>
-    <md-card youtube-player
+    <youtube-player
         class="youtube-player"
         playlist="player.playlist"
         active-video="player.activeVideo"
@@ -35,7 +35,7 @@
         ng-show="player.playlist.videos.length"
         layout="column"
         layout-align="center center">
-    </md-card>
+    </youtube-player>
     <md-list class="song-list">
         <md-list-item
             ng-repeat="video in player.playlist.videos track by $index"

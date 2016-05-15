@@ -36,7 +36,7 @@ describe("youtubePlayer", function() {
 
         bard.inject(function($window, $rootScope, $compile) {
             testScope = $rootScope;
-            elm = angular.element('<md-card youtube-player playlist="playlist"></md-card>');
+            elm = angular.element('<youtube-player playlist="playlist"></youtube-player>');
 
             testScope.playlist = {
                 title: "Test Playlist",
@@ -56,7 +56,7 @@ describe("youtubePlayer", function() {
 
             $compile(elm)(testScope);
             testScope.$digest();
-            elm.isolateScope().player = {
+            elm.isolateScope().$ctrl.player = {
                 cuePlaylist: sinon.spy(),
                 getCurrentTime: function() {
                     return 42;
@@ -70,7 +70,7 @@ describe("youtubePlayer", function() {
                 loadPlaylist: sinon.spy(),
                 playVideoAt: sinon.spy()
             };
-            isolateScope = elm.isolateScope();
+            isolateScope = elm.isolateScope().$ctrl;
         });
     });
 
@@ -130,7 +130,7 @@ describe("youtubePlayer", function() {
             isolateScope.changeVideo = sinon.spy();
             isolateScope.ready = true;
             isolateScope.playlist.activeVideo = 1;
-            isolateScope.$apply();
+            testScope.$apply();
 
             expect(isolateScope.changeVideo.calledOnce).toEqual(true);
         });
