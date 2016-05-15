@@ -1,7 +1,7 @@
 (function() {
     "use strict";
 
-    var componentRegistry = {
+    const componentRegistry = {
         bindings: {
             activeVideo:     '=',
             playlist:        '=',

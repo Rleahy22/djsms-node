@@ -14,8 +14,7 @@
             })
             .state('layout.playlists', {
                 url: 'playlists',
-                templateUrl: '/public/modules/playlist/playlists.html',
-                controller: 'PlaylistsCtrl as playlists'
+                templateUrl: '/public/modules/playlist/playlists.html'
             })
             .state('layout.playlist', {
                 url: 'playlists/:playlistId',
