@@ -8,12 +8,15 @@
 
     function playlistService($http, $q, configService) {
         var service = {
-            addVideo:    addVideo,
-            create:      create,
-            deleteVideo: deleteVideo,
-            retrieve:    retrieve,
-            retrieveAll: retrieveAll
+            addVideo:        addVideo,
+            clearPlaylist:   clearPlaylist,
+            create:          create,
+            currentPlaylist: null,
+            deleteVideo:     deleteVideo,
+            retrieve:        retrieve,
+            retrieveAll:     retrieveAll
         };
+
         return service;
 
         function addVideo(playlist, video) {
@@ -31,6 +34,10 @@
             });
 
             return updatePromise.promise;
+        }
+
+        function clearPlaylist () {
+            service.currentPlaylist = null;
         }
 
         function create(title) {
@@ -67,7 +74,9 @@
 
             $http.get(url)
             .then(function(response) {
-                retrievePromise.resolve(angular.extend({}, response.data.playlist));
+                let playlist = angular.extend({}, response.data.playlist);
+                service.currentPlaylist = playlist;
+                retrievePromise.resolve(playlist);
             }, function(response) {
                 retrievePromise.reject(response.data);
             });

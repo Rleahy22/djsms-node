@@ -1,0 +1,41 @@
+.song-list {
+    min-height: 5em;
+    overflow-y: scroll;
+
+    .md-accent {
+
+        .md-list-item-inner {
+            background-color: #80d8ff;
+        }
+    }
+
+    .song-row {
+        max-height: 64px;
+
+        button {
+            padding-right: 0;
+            padding-left: 0;
+        }
+
+        .song-image {
+            max-height: 64px;
+        }
+
+        .song-title {
+            padding-left: 2px;
+            font-size: 1em;
+            line-height: 1.2em;
+            text-overflow: ellipsis;
+            width: 70%;
+        }
+
+        .song-delete-btn {
+            margin-left: 0;
+            margin-right: 0;
+            min-width: 20px;
+            position: absolute;
+            right: 0;
+            z-index: 100;
+        }
+    }
+}

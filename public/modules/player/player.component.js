@@ -43,18 +43,6 @@
                     layout="column"
                     layout-align="center center">
                 </youtube-player>
-                <md-list class="song-list">
-                    <md-list-item
-                        ng-repeat="video in $ctrl.playlist.videos track by $index"
-                        class="song-row md-default-theme"
-                        ng-class="{'md-accent': $index === $ctrl.playlist.activeVideo}"
-                        ng-click="$ctrl.playVideo($index)"
-                    >
-                        <img class="song-image" src="{{video.thumbnail}}">
-                        <span>{{video.title}}</span>
-                        <md-button ng-click="$ctrl.deleteVideo(video.id, $event)" class="song-delete-btn">X</md-button>
-                    </md-list-item>
-                </md-list>
             </md-content>
         `
     };
@@ -81,6 +69,10 @@
             .then(function(result) {
                 $ctrl.playlist = result;
             });
+        };
+
+        $ctrl.$onDestroy = function() {
+            playlistService.clearPlaylist();
         };
 
         function addSocketVideoToPlaylist(textSearchResult) {

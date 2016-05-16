@@ -36,16 +36,4 @@
         layout="column"
         layout-align="center center">
     </youtube-player>
-    <md-list class="song-list">
-        <md-list-item
-            ng-repeat="video in player.playlist.videos track by $index"
-            class="song-row md-default-theme"
-            ng-class="{'md-accent': $index === player.playlist.activeVideo}"
-            ng-click="player.playVideo($index)"
-        >
-            <img class="song-image" src="{{video.thumbnail}}">
-            <span>{{video.title}}</span>
-            <md-button ng-click="player.deleteVideo(video.id, $event)" class="song-delete-btn">X</md-button>
-        </md-list-item>
-    </md-list>
 </md-content>
