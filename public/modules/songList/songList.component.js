@@ -24,6 +24,7 @@
         var $ctrl = this;
 
         $ctrl.$scope          = $scope;
+        $ctrl.deleteVideo     = deleteVideo;
         $ctrl.playlist        = playlistService.currentPlaylist;
         $ctrl.playlistService = playlistService;
         $ctrl.playVideo       = playVideo;
@@ -31,6 +32,20 @@
         $scope.$watch('$ctrl.playlistService.currentPlaylist', function(newVal) {
             $ctrl.playlist = newVal;
         });
+
+        function deleteVideo(videoId, event) {
+            if (event.stopPropagation) { event.stopPropagation(); }
+            if (event.preventDefault) { event.preventDefault(); }
+            event.cancelBubble = true;
+            event.returnValue = false;
+
+            playlistService.deleteVideo(videoId)
+            .then(function() {
+                _.remove($ctrl.playlist.videos, function(video) {
+                    return video.id === videoId;
+                });
+            });
+        }
 
         function playVideo(index) {
             $ctrl.playlistService.currentPlaylist.activeVideo = index;
