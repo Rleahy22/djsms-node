@@ -34,7 +34,7 @@ describe("youtubeSearch", function() {
         });
 
         $httpBackend.when('GET', youtubeBaseUrl + 'error').respond(function() {
-            return [500, {data: {message: "Fatal Error"}}, {}];
+            return [500, {message: "Fatal Error"}, {}];
         });
     });
 
@@ -43,7 +43,7 @@ describe("youtubeSearch", function() {
             youtubeSearch.search('test query')
             .then(function(result) {
                 expect(result.id.videoId).toEqual(481516);
-            }, function() {
+            }).catch(() => {
                 expect(1).toEqual(2);
             });
 
@@ -54,7 +54,8 @@ describe("youtubeSearch", function() {
             youtubeSearch.search('error')
             .then(function() {
                 expect(1).toEqual(2);
-            }, function(error) {
+            }).catch((error) => {
+                console.info(error);
                 expect(error.message).toMatch(/Fatal Error/);
             });
 

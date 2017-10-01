@@ -24,14 +24,14 @@
             url   = url + key + part + maxResults + query;
 
             $http.get(url)
-            .success(function(response) {
-                _.each(response.items, function(item) {
+            .then(function(response) {
+                _.each(response.data.items, function(item) {
                     if (item.id.kind === "youtube#video") {
                         searchPromise.resolve(angular.extend({}, item));
                     }
                 });
             })
-            .error(function(response) {
+            .catch(function(response) {
                 searchPromise.reject(response.data);
             });
 

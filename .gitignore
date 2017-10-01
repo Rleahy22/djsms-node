@@ -5,3 +5,4 @@ coverage/*
 config/config.js
 config/*.pem
 npm-debug.log
+pg_upgrade*

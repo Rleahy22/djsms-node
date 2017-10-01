@@ -59,7 +59,7 @@
         function onPlayerReady() {
             $ctrl.ready = true;
             if (!(_.isEmpty($ctrl.playlist.videos))) {
-                $ctrl.playerPlaylist = _.pluck($ctrl.playlist.videos, 'videoid');
+                $ctrl.playerPlaylist = _.map($ctrl.playlist.videos, 'videoid');
                 $ctrl.addVideosToPlaylist();
             }
         }
@@ -78,7 +78,7 @@
         }
 
         function updatePlaylist() {
-            $ctrl.playerPlaylist = _.pluck($ctrl.playlist.videos, 'videoid');
+            $ctrl.playerPlaylist = _.map($ctrl.playlist.videos, 'videoid');
             var currentTime = $ctrl.player.getCurrentTime();
             var currentIndex = $ctrl.player.getPlaylistIndex();
             $ctrl.player.loadPlaylist($ctrl.playerPlaylist, currentIndex, currentTime);

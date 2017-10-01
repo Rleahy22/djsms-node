@@ -77,7 +77,7 @@
                 let playlist = angular.extend({}, response.data.playlist);
                 service.currentPlaylist = playlist;
                 retrievePromise.resolve(playlist);
-            }, function(response) {
+            }).catch((response) => {
                 retrievePromise.reject(response.data);
             });
 
@@ -91,7 +91,7 @@
             $http.get(url)
             .then(function(response) {
                 retrieveAllPromise.resolve(angular.extend({}, response.data.playlists));
-            }, function(response) {
+            }).catch((response) => {
                 retrieveAllPromise.reject(response.data);
             });
 
