@@ -1,29 +1,29 @@
 "use strict";
 
-var koa        = require('koa');
-var bodyParser = require('koa-body-parser');
-var router     = require('./routes');
-var less       = require('koa-less');
-var serve      = require('koa-static');
-var http       = require('http');
-var socketIO   = require('socket.io');
-var config     = require('./config/config')();
+const koa        = require('koa');
+const bodyParser = require('koa-body-parser');
+const router     = require('./routes');
+const less       = require('koa-less');
+const serve      = require('koa-static');
+const http       = require('http');
+const socketIO   = require('socket.io');
+const config     = require('./config/config')();
 
-var app = koa();
+let app = koa();
 
 app.use(bodyParser());
 app.use(less(__dirname + '/'));
 app.use(serve(__dirname + '/'));
 
 app.use(function *(next) {
-  var start = new Date();
+  let start = new Date();
   yield next;
-  var ms = new Date() - start;
+  let ms = new Date() - start;
   console.log('%s %s - %s ms', this.method, this.url, ms);
 });
 
-var server = http.createServer(app.callback());
-var io     = socketIO(server);
+let server = http.createServer(app.callback());
+let io     = socketIO(server);
 
 router(app, io);
 

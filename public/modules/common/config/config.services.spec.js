@@ -3,25 +3,24 @@
 describe('configService', function() {
     var configService = {};
 
-    beforeEach(function() {
-        bard.appModule('app', function($provide) {
-            $provide.value('$window', {
-                config: {
-                    app: {
-                        baseUrl: 'http://www.test.com/'
-                    }
+    beforeEach(module('app', function ($provide) {
+        $provide.value('$window', {
+            config: {
+                app: {
+                    baseUrl: 'http://www.test.com/'
                 }
-            });
+            }
         });
+    }));
 
-        bard.inject(this);
-
-        configService = this.$injector.get('configService');
-    });
+    beforeEach(inject(function (configService) {
+        this.configService = configService;
+    }));
 
     describe("initialization", function() {
         it("should return the $window's config object", function() {
-            expect(configService.baseUrl).toEqual('http://www.test.com/');
+            const testConfig = this.configService.getConfig();
+            expect(testConfig.baseUrl).toEqual('http://www.test.com/');
         });
     });
 });

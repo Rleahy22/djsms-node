@@ -68,7 +68,6 @@
             if (this.searchText) {
                 this.youtubeSearch.search(this.searchText)
                     .then((result) => {
-                        console.info('COMP:', result);
                         this.searchResult = {
                             thumbnail: result.snippet.thumbnails.default.url,
                             title: result.snippet.title,

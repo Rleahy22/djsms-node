@@ -5,11 +5,13 @@
         constructor ($http, configService) {
             Object.assign(this, { $http, configService });
 
+            this.config = this.configService.getConfig();
+
             this.currentPlaylist = {};
         }
 
         addVideo (playlist, video) {
-            let url = this.configService.baseUrl + "playlists/" + playlist.id;
+            let url = this.config.baseUrl + "playlists/" + playlist.id;
 
             return this.$http.put(url, {
                 playlist: playlist,
@@ -29,7 +31,7 @@
         }
 
         create (title) {
-            let url = this.configService.baseUrl + "playlists/create";
+            let url = this.config.baseUrl + "playlists/create";
 
             return this.$http.post(url, { title: title })
                 .then((response) => {
@@ -38,7 +40,7 @@
         }
 
         deleteVideo (videoId) {
-            let url = this.configService.baseUrl + "videos/" + videoId;
+            let url = this.config.baseUrl + "videos/" + videoId;
 
             return this.$http.delete(url)
                 .then((response) => {
@@ -53,7 +55,7 @@
         }
 
         retrieve (playlistId) {
-            let url = this.configService.baseUrl + "playlists/get/" + playlistId;
+            let url = this.config.baseUrl + "playlists/get/" + playlistId;
 
             return this.$http.get(url)
                 .then((response) => {
@@ -63,7 +65,7 @@
         }
 
         retrieveAll () {
-            let url = this.configService.baseUrl + "playlists/all";
+            let url = this.config.baseUrl + "playlists/all";
 
             return this.$http.get(url)
                 .then((response) => {

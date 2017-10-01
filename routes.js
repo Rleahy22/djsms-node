@@ -1,25 +1,25 @@
 "use strict";
 
-var router     = require("koa-router")();
-var views      = require('co-views');
-var Playlist   = require('./services/playlists');
-var Text       = require('./services/texts');
-var Video      = require('./services/videos');
-var config     = require('./config/config')();
+const router = require("koa-router")();
+const views = require('co-views');
+const Playlist = require('./services/playlists');
+const Text = require('./services/texts');
+const Video = require('./services/videos');
+const appConfig = require('./config/config')();
 
-var config = JSON.stringify({
-    baseUrl: config.baseUrl,
-    youtubeKey: config.youtubeKey
+const config = JSON.stringify({
+    baseUrl: appConfig.baseUrl,
+    youtubeKey: appConfig.youtubeKey
 });
 
-var render = views('views/', {
+const render = views('views/', {
     map: {
         html: 'hogan'
     }
 });
 
 module.exports = function(app, io) {
-    var Socket;
+    let Socket;
 
     io.on('connection', function (socket) {
         console.log('connection established');
@@ -35,7 +35,7 @@ module.exports = function(app, io) {
 
     router.get('/playlists/all', function *(next) {
         yield next;
-        var playlists = yield Playlist.retrieveAll();
+        let playlists = yield Playlist.retrieveAll();
         this.body = yield {
             playlists: playlists
         };
@@ -49,14 +49,14 @@ module.exports = function(app, io) {
     .post('/playlists/create', function *(next) {
         yield next;
         this.body = this.request.body;
-        var playlist = yield Playlist.create(this.body);
+        let playlist = yield Playlist.create(this.body);
         this.body = yield {
             playlist: playlist
         };
     })
     .get('/playlists/get/:id', function *(next) {
         yield next;
-        var playlist = yield Playlist.retrieve(this.params.id);
+        let playlist = yield Playlist.retrieve(this.params.id);
         this.body = yield {
             playlist: playlist
         };
@@ -64,7 +64,7 @@ module.exports = function(app, io) {
     .put('/playlists/:id', function *(next) {
         yield next;
         this.body = this.request.body;
-        var playlist = yield Playlist.update(this.body);
+        let playlist = yield Playlist.update(this.body);
         this.body = yield {
             playlist: playlist
         };
@@ -76,13 +76,13 @@ module.exports = function(app, io) {
     })
     .post('/text', function *(next) {
         yield next;
-        var match = /(^\d+)\s(.+)$/.exec(this.request.body.Body);
-        // var playlistId = match[1];
-        var query      = match[2];
-        // var playlist   = yield Playlist.retrieve(playlistId);
-        var result     = yield Text.search(query);
+        let match = /(^\d+)\s(.+)$/.exec(this.request.body.Body);
+        // let playlistId = match[1];
+        let query      = match[2];
+        // let playlist   = yield Playlist.retrieve(playlistId);
+        let result     = yield Text.search(query);
 
-        // var body = {
+        // let body = {
         //     playlist: playlist,
         //     video: {
         //         thumbnail: result.snippet.thumbnails.default.url,

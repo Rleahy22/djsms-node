@@ -1,12 +1,18 @@
 (function() {
     "use strict";
 
+    class configService {
+        constructor ($window) {
+            this.$window = $window;
+        }
+
+        getConfig () {
+            return this.$window.config.app;
+        }
+    }
+
     angular.module('app')
-    .factory('configService', configService);
+    .service('configService', configService);
 
     configService.$inject = ['$window'];
-
-    function configService($window) {
-        return $window.config.app;
-    }
 })();

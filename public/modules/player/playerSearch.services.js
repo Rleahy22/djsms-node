@@ -4,16 +4,12 @@
     class YoutubeSearch {
         constructor (configService, $http) {
             Object.assign(this, { configService, $http});
+
+            this.config = this.configService.getConfig();
         }
 
         search (query) {
-            let url = 'https://www.googleapis.com/youtube/v3/search?';
-            const key = 'key=' + this.configService.youtubeKey;
-            const part = '&part=snippet';
-            const maxResults = '&maxResults=5';
-
-            query = '&q=' + query;
-            url = url + key + part + maxResults + query;
+            const url = `https://www.googleapis.com/youtube/v3/search?key=${this.config.youtubeKey}&part=snippet&maxResults=5&q=${query}`;
 
             return this.$http.get(url)
                 .then(function(response) {

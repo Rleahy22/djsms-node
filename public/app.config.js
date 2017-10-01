@@ -5,7 +5,7 @@
         .module('app')
         .config(config);
 
-    function config($locationProvider, $stateProvider, $urlRouterProvider) {
+    function config ($locationProvider, $stateProvider, $urlRouterProvider) {
         $locationProvider.html5Mode(true);
         $stateProvider
             .state('layout', {

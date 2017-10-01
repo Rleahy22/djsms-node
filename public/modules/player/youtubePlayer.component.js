@@ -5,7 +5,6 @@
         constructor ($window, _) {
             Object.assign(this, { $window, _ });
 
-            this.player = {};
             this.ready = false;
         }
 

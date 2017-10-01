@@ -1,10 +1,14 @@
-"use strict";
+(function () {
+    "use strict";
 
-angular.module('app')
-.factory('lodash', lodash);
+    class lodash {
+        constructor ($window) {
+            return $window._;
+        }
+    }
 
-lodash.$inject = ['$window'];
+    angular.module('app')
+        .service('lodash', lodash);
 
-function lodash($window) {
-    return $window._;
-}
+    lodash.$inject = ['$window'];
+})();
