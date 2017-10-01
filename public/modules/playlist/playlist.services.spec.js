@@ -121,10 +121,11 @@ describe("playlistService", function() {
 
     describe("deleteVideo", function() {
         it("delete a Video by id", function() {
+            playlistService.currentPlaylist = testPlaylist;
             playlistService.deleteVideo(1)
             .then(function(result) {
                 expect(result).toEqual("Success");
-            }, function() {
+            }).catch(() => {
                 expect(1).toEqual(2);
             });
 

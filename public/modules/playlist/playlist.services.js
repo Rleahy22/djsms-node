@@ -21,7 +21,11 @@
         }
 
         clearPlaylist () {
-            this.currentPlaylist = {};
+            for (var key in this.currentPlaylist){
+                if (this.currentPlaylist.hasOwnProperty(key)){
+                    delete this.currentPlaylist[key];
+                }
+            }
         }
 
         create (title) {
@@ -38,6 +42,12 @@
 
             return this.$http.delete(url)
                 .then((response) => {
+                    this.currentPlaylist.videos.forEach((video, index) => {
+                        if (video.videoId === videoId) {
+                            this.currentPlaylist.videos.splice(index, 0);
+                        }
+                    });
+
                     return response.data;
                 });
         }
