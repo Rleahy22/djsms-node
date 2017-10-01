@@ -1,101 +1,73 @@
 (function() {
     "use strict";
 
-    angular.module('app')
-    .factory('playlistService', playlistService);
+    class PlaylistService {
+        constructor ($http, configService) {
+            Object.assign(this, { $http, configService });
 
-    playlistService.$inject = ['$http', '$q', 'configService'];
+            this.currentPlaylist = {};
+        }
 
-    function playlistService($http, $q, configService) {
-        var service = {
-            addVideo:        addVideo,
-            clearPlaylist:   clearPlaylist,
-            create:          create,
-            currentPlaylist: null,
-            deleteVideo:     deleteVideo,
-            retrieve:        retrieve,
-            retrieveAll:     retrieveAll
-        };
+        addVideo (playlist, video) {
+            let url = this.configService.baseUrl + "playlists/" + playlist.id;
 
-        return service;
-
-        function addVideo(playlist, video) {
-            var updatePromise = $q.defer();
-            var url = configService.baseUrl + "playlists/" + playlist.id;
-
-            $http.put(url, {
+            return this.$http.put(url, {
                 playlist: playlist,
                 video: video
             })
-            .then(function(response) {
-                updatePromise.resolve(angular.extend({}, response.data.playlist));
-            }, function(response) {
-                updatePromise.reject(response.data);
-            });
-
-            return updatePromise.promise;
+                .then((response) => {
+                    return Object.assign({}, response.data.playlist);
+                });
         }
 
-        function clearPlaylist () {
-            service.currentPlaylist = null;
+        clearPlaylist () {
+            this.currentPlaylist = {};
         }
 
-        function create(title) {
-            var createPromise = $q.defer();
-            var url = configService.baseUrl + "playlists/create";
+        create (title) {
+            let url = this.configService.baseUrl + "playlists/create";
 
-            $http.post(url, {title: title})
-            .then(function(response) {
-                createPromise.resolve(angular.extend({}, response.data.playlist));
-            }, function(response) {
-                createPromise.reject(response.data);
-            });
-
-            return createPromise.promise;
+            return this.$http.post(url, { title: title })
+                .then((response) => {
+                    return Object.assign({}, response.data.playlist);
+                });
         }
 
-        function deleteVideo(videoId) {
-            var deletePromise = $q.defer();
-            var url = configService.baseUrl + "videos/" + videoId;
+        deleteVideo (videoId) {
+            let url = this.configService.baseUrl + "videos/" + videoId;
 
-            $http.delete(url)
-            .then(function(response) {
-                deletePromise.resolve(response.data);
-            }, function(response) {
-                deletePromise.reject(response.data);
-            });
-
-            return deletePromise.promise;
+            return this.$http.delete(url)
+                .then((response) => {
+                    return response.data;
+                });
         }
 
-        function retrieve(playlistId) {
-            var retrievePromise = $q.defer();
-            var url = configService.baseUrl + "playlists/get/" + playlistId;
+        retrieve (playlistId) {
+            let url = this.configService.baseUrl + "playlists/get/" + playlistId;
 
-            $http.get(url)
-            .then(function(response) {
-                let playlist = angular.extend({}, response.data.playlist);
-                service.currentPlaylist = playlist;
-                retrievePromise.resolve(playlist);
-            }).catch((response) => {
-                retrievePromise.reject(response.data);
-            });
-
-            return retrievePromise.promise;
+            return this.$http.get(url)
+                .then((response) => {
+                    Object.assign(this.currentPlaylist, response.data.playlist);
+                    return this.currentPlaylist;
+                });
         }
 
-        function retrieveAll() {
-            var retrieveAllPromise = $q.defer();
-            var url = configService.baseUrl + "playlists/all";
+        retrieveAll () {
+            let url = this.configService.baseUrl + "playlists/all";
 
-            $http.get(url)
-            .then(function(response) {
-                retrieveAllPromise.resolve(angular.extend({}, response.data.playlists));
-            }).catch((response) => {
-                retrieveAllPromise.reject(response.data);
-            });
+            return this.$http.get(url)
+                .then((response) => {
+                    return Object.assign({}, response.data.playlists);
+                });
+        }
 
-            return retrieveAllPromise.promise;
+        getCurrentPlaylist () {
+            return this.currentPlaylist;
         }
     }
+
+    angular.module('app')
+    .factory('playlistService', PlaylistService);
+
+    PlaylistService.$inject = ['$http', 'configService'];
 })();

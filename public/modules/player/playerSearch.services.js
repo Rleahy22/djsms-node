@@ -1,41 +1,35 @@
 (function() {
     "use strict";
 
-    angular.module('app')
-    .factory('youtubeSearch', youtubeSearch);
+    class YoutubeSearch {
+        constructor (configService, $http) {
+            Object.assign(this, { configService, $http});
+        }
 
-    youtubeSearch.$inject = ['configService', '$http', '$q', 'lodash'];
-
-    function youtubeSearch(configService, $http, $q, _) {
-        var service = {
-            search: search
-        };
-
-        return service;
-
-        function search(query) {
-            var searchPromise = $q.defer();
-            var url           = 'https://www.googleapis.com/youtube/v3/search?';
-            var key           = 'key=' + configService.youtubeKey;
-            var part          = '&part=snippet';
-            var maxResults    = '&maxResults=5';
+        search (query) {
+            let url = 'https://www.googleapis.com/youtube/v3/search?';
+            const key = 'key=' + this.configService.youtubeKey;
+            const part = '&part=snippet';
+            const maxResults = '&maxResults=5';
 
             query = '&q=' + query;
-            url   = url + key + part + maxResults + query;
+            url = url + key + part + maxResults + query;
 
-            $http.get(url)
-            .then(function(response) {
-                _.each(response.data.items, function(item) {
-                    if (item.id.kind === "youtube#video") {
-                        searchPromise.resolve(angular.extend({}, item));
-                    }
+            return this.$http.get(url)
+                .then(function(response) {
+                    let results = response.data.items.filter((item) => {
+                        if (item.id.kind === "youtube#video") {
+                            return item;
+                        }
+                    });
+
+                    return results[0];
                 });
-            })
-            .catch(function(response) {
-                searchPromise.reject(response.data);
-            });
-
-            return searchPromise.promise;
         }
     }
+
+    YoutubeSearch.$inject = [ 'configService', '$http'];
+
+    angular.module('app')
+    .service('youtubeSearch', YoutubeSearch);
 })();

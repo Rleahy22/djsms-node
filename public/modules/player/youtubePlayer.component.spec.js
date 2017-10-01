@@ -1,32 +1,12 @@
 "use strict";
 
-describe("youtubePlayer", function() {
-    var elm, testScope, isolateScope;
-    var testState = 1;
-    var exampleUpdatedPlaylist = {
-        title: "Test Playlist",
-        videos: [
-            {
-                videoId: 'M7lc1UVf-VE',
-                title: 'YouTube Developers Live: Embedded Web Player Customization',
-                thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
-            },
-            {
-                videoId: 'tnXO-i7944M',
-                title: 'Dan Wahlin - AngularJS in 20ish Minutes - NG-Conf 2014',
-                thumbnail: 'https://i.ytimg.com/vi/i9MHigUZKEM/default.jpg'
-            },
-            {
-                videoId: 'M7lc1UVf-VE',
-                title: 'YouTube Developers Live: Embedded Web Player Customization',
-                thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
-            }
-        ]
-    };
+describe("youtubePlayer", function () {
+    let elm, testScope, isolateScope;
+    let testState = 1;
 
     beforeEach(module("templates"));
-    beforeEach(function() {
-        bard.appModule('app', function($provide) {
+    beforeEach(function () {
+        bard.appModule('app', function ($provide) {
             $provide.value('configService', {
                 baseUrl: "http://localhost:20001/",
                 youtubeKey: 'fakeKey'
@@ -34,37 +14,35 @@ describe("youtubePlayer", function() {
             $provide.value('lodash', _);
         });
 
-        bard.inject(function($window, $rootScope, $compile) {
+        bard.inject(function ($window, $rootScope, $compile) {
             testScope = $rootScope;
-            elm = angular.element('<youtube-player playlist="playlist"></youtube-player>');
 
-            testScope.playlist = {
-                title: "Test Playlist",
-                videos: [
-                    {
-                        videoId: 'M7lc1UVf-VE',
-                        title: 'YouTube Developers Live: Embedded Web Player Customization',
-                        thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
-                    },
-                    {
-                        videoId: 'tnXO-i7944M',
-                        title: 'Dan Wahlin - AngularJS in 20ish Minutes - NG-Conf 2014',
-                        thumbnail: 'https://i.ytimg.com/vi/i9MHigUZKEM/default.jpg'
-                    }
-                ]
-            };
+            testScope.videos = [
+                {
+                    videoId: 'M7lc1UVf-VE',
+                    title: 'YouTube Developers Live: Embedded Web Player Customization',
+                    thumbnail: 'https://i.ytimg.com/vi/M7lc1UVf-VE/default.jpg'
+                },
+                {
+                    videoId: 'tnXO-i7944M',
+                    title: 'Dan Wahlin - AngularJS in 20ish Minutes - NG-Conf 2014',
+                    thumbnail: 'https://i.ytimg.com/vi/i9MHigUZKEM/default.jpg'
+                }
+            ];
+
+            elm = angular.element('<youtube-player videos="videos"></youtube-player>');
 
             $compile(elm)(testScope);
             testScope.$digest();
             elm.isolateScope().$ctrl.player = {
                 cuePlaylist: sinon.spy(),
-                getCurrentTime: function() {
+                getCurrentTime: function () {
                     return 42;
                 },
-                getPlayerState: function() {
+                getPlayerState: function () {
                     return testState;
                 },
-                getPlaylistIndex: function() {
+                getPlaylistIndex: function () {
                     return 4;
                 },
                 loadPlaylist: sinon.spy(),
@@ -74,16 +52,16 @@ describe("youtubePlayer", function() {
         });
     });
 
-    describe("addVideosToPlaylist", function() {
-        it("should add the playlist to youtubePlayer", function() {
+    describe("addVideosToPlaylist", function () {
+        it("should add the playlist to youtubePlayer", function () {
             isolateScope.addVideosToPlaylist();
 
             expect(isolateScope.player.cuePlaylist.calledWith(isolateScope.playerPlaylist)).toEqual(true);
         });
     });
 
-    describe("updatePlaylist", function() {
-        it("should load a new playlist in the youtube player", function() {
+    describe("updatePlaylist", function () {
+        it("should load a new playlist in the youtube player", function () {
             isolateScope.updatePlaylist();
 
             expect(isolateScope.player.loadPlaylist.calledWith(
@@ -94,43 +72,35 @@ describe("youtubePlayer", function() {
         });
     });
 
-    describe("onPlayerReady", function() {
-        it("should set ready to true", function() {
+    describe("onPlayerReady", function () {
+        it("should set ready to true", function () {
             expect(isolateScope.ready).toEqual(false);
             isolateScope.onPlayerReady();
             expect(isolateScope.ready).toEqual(true);
         });
     });
 
-    describe("onStateChange", function() {
-        it("should set update playlist.activeVideo", function() {
-            expect(isolateScope.playlist.activeVideo).toEqual(undefined);
+    describe("onStateChange", function () {
+        it("should set update playlist.activeVideo", function () {
+            expect(isolateScope.activeVideo).toEqual(undefined);
             isolateScope.onStateChange();
-            expect(isolateScope.playlist.activeVideo).toEqual(4);
-        });
-
-        it("should load updated playlist on song change if available", function() {
-            isolateScope.playlist.activeVideo = 3;
-            isolateScope.updatedPlaylist = exampleUpdatedPlaylist;
-            isolateScope.onStateChange();
-            expect(isolateScope.playlist).toEqual(exampleUpdatedPlaylist);
-            expect(isolateScope.updatedPlaylist).toEqual(undefined);
+            expect(isolateScope.activeVideo).toEqual(4);
         });
     });
 
-    describe("change video", function() {
-        it("should change player to selected video", function() {
+    describe("change video", function () {
+        it("should change player to selected video", function () {
             isolateScope.changeVideo(2);
             expect(isolateScope.player.playVideoAt.calledWith(2)).toEqual(true);
         });
     });
 
-    describe("changes to playlist activeVideo", function() {
-        it("should call updatePlaylist", function() {
+    describe("changes to playlist activeVideo", function () {
+        it("should call updatePlaylist", function () {
             isolateScope.changeVideo = sinon.spy();
             isolateScope.ready = true;
-            isolateScope.playlist.activeVideo = 1;
-            testScope.$apply();
+            isolateScope.$onChanges({ activeVideo: { currentValue: 1 } } )
+            testScope.$digest();
 
             expect(isolateScope.changeVideo.calledOnce).toEqual(true);
         });

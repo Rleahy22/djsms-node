@@ -1,1 +1,42 @@
-<player></player>
+<md-content layout="column" layout-padding role="main" class="md-accent djsms-player">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2 class="md-toolbar-item md-breadcrumb">
+                <span><a ui-sref="layout.playlists">Playlists</a></span>
+                <span class="seperator-icon">&gt;</span>
+                <span md-breadcrumb-page>{{$ctrl.playlist.title}}</span>
+            </h2>
+        </div>
+    </md-toolbar>
+
+    <md-input-container class="youtube-search">
+        <form ng-submit="$ctrl.addVideoToPlaylist($ctrl.searchResult.videoId)">
+            <input
+                type="text"
+                ng-model="$ctrl.searchText"
+                class="search-input"
+                aria-label="Search Youtube"
+                ng-keyup="$ctrl.search()"
+                layout-align="center center"
+                placeholder="Search for Song"
+            >
+        </form>
+    </md-input-container>
+
+    <md-button class="search-results" ng-if="$ctrl.searchResult.thumbnail" ng-click="$ctrl.addVideoToPlaylist($ctrl.searchResult.videoId)">
+        <div layout="row" layout-align="center center">
+            <img class="result-image" src="{{$ctrl.searchResult.thumbnail}}">
+            <span class="result-text">{{$ctrl.searchResult.title}}</span>
+        </div>
+    </md-button>
+    
+    <youtube-player
+        class="youtube-player"
+        videos="$ctrl.playlist.videos"
+        active-video="$ctrl.playlist.activeVideo"
+        updated-playlist="$ctrl.updatedPlaylist"
+        ng-show="$ctrl.playlist.videos.length"
+        layout="column"
+        layout-align="center center">
+    </youtube-player>
+</md-content>

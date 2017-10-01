@@ -1,62 +1,33 @@
 (function() {
     "use strict";
 
-    const componentRegistry = {
-        bindings: {},
-        controller: PlaylistsCtrl,
-        template: `
-            <md-content layout="column" flex layout-padding role="main" class="md-accent playlists-all">
-                <md-toolbar>
-                    <div class="md-toolbar-tools">
-                        <h2 class="md-toolbar-item">Playlists</h2>
-                    </div>
-                </md-toolbar>
-                <form ng-submit="$ctrl.createPlaylist()">
-                    <md-input-container class="playlist-create">
-                        <input
-                            type="text"
-                            ng-model="$ctrl.newTitle"
-                            class="create-input"
-                            aria-label="Create new Playlist"
-                            layout-align="center center"
-                            placeholder="Enter Playlist Name"
-                        >
-                    </md-input-container>
-                    <md-input-container>
-                        <md-button type='submit' ng-disabled="!$ctrl.newTitle">Create Playlist</md-button>
-                    </md-input-container>
-                </form>
-                <md-list class="playlists-list">
-                    <md-list-item ng-repeat="playlist in $ctrl.playlists track by $index" class="song-row md-default-theme">
-                        <a ui-sref="layout.playlist({playlistId: playlist.id})" class="md-button">{{playlist.title}}</a>
-                    </md-list-item>
-                </md-list>
-            </md-content>
-        `
-    };
+    class PlaylistsCtrl {
+        constructor ($state, playlistService) {
+            Object.assign(this, { $state, playlistService });
 
-    function PlaylistsCtrl($state, playlistService) {
-        var $ctrl = this;
+            this.playlists = [];
+        }
 
-        $ctrl.createPlaylist = createPlaylist;
-        $ctrl.playlists      = [];
-
-        activate();
-
-        function activate() {
-            playlistService.retrieveAll()
-            .then(function(response) {
-                $ctrl.playlists = response;
+        $onInit () {
+            this.playlistService.retrieveAll()
+            .then((response) => {
+                this.playlists = response;
             });
         }
 
-        function createPlaylist() {
-            playlistService.create($ctrl.newTitle)
-            .then(function(response) {
-                $state.go('layout.playlist', {playlistId: response.id});
+        createPlaylist () {
+            this.playlistService.create(this.newTitle)
+            .then((response) => {
+                this.$state.go('layout.playlist', { playlistId: response.id });
             });
         }
     }
+
+    const componentRegistry = {
+        bindings: {},
+        controller: PlaylistsCtrl,
+        templateUrl: '/public/modules/playlist/playlists.html'
+    };
 
     componentRegistry.$inject = ['$state', 'playlistService'];
 

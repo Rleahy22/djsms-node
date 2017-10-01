@@ -25,7 +25,7 @@ describe("youtubeSearch", function() {
             });
         });
 
-        bard.inject(this, '$q', '$httpBackend');
+        bard.inject(this, '$httpBackend');
 
         youtubeSearch = this.$injector.get('youtubeSearch');
 
@@ -55,8 +55,7 @@ describe("youtubeSearch", function() {
             .then(function() {
                 expect(1).toEqual(2);
             }).catch((error) => {
-                console.info(error);
-                expect(error.message).toMatch(/Fatal Error/);
+                expect(error.data.message).toMatch(/Fatal Error/);
             });
 
             $httpBackend.flush();

@@ -45,7 +45,7 @@ describe("playlistService", function() {
             });
         });
 
-        bard.inject(this, '$q', '$httpBackend');
+        bard.inject(this, '$httpBackend');
 
         playlistService = this.$injector.get('playlistService');
 
@@ -54,7 +54,7 @@ describe("playlistService", function() {
         });
 
         $httpBackend.when('GET', baseUrl + 'get/error').respond(function() {
-            return [500, {data: {message: "Fatal Error"}}, {}];
+            return [500, {message: "Fatal Error"}, {}];
         });
 
         playlistsAllGet = $httpBackend.whenGET(allPlaylistsUrl);
@@ -105,7 +105,7 @@ describe("playlistService", function() {
 
         it("should error gracefully", function() {
             playlistsPost.respond(function() {
-                return [500, {data: {message: "Fatal Error"}}, {}];
+                return [500, {message: "Fatal Error"}, {}];
             });
 
             playlistService.create('error')
@@ -133,7 +133,7 @@ describe("playlistService", function() {
 
         it("should error gracefully", function() {
             videoDelete.respond(function() {
-                return [500, {data: {message: "Fatal Error"}}, {}];
+                return [500, {message: "Fatal Error"}, {}];
             });
 
             playlistService.deleteVideo(1)
@@ -186,7 +186,7 @@ describe("playlistService", function() {
 
         it("should error gracefully", function() {
             playlistsAllGet.respond(function() {
-                return [500, {data: {message: "Fatal Error"}}, {}];
+                return [500, {message: "Fatal Error"}, {}];
             });
 
             playlistService.retrieveAll('error')

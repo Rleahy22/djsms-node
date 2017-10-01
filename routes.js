@@ -26,7 +26,7 @@ module.exports = function(app, io) {
         Socket = socket;
     });
 
-    router.get('/playlists/', function *(next) {
+    router.get('/playlists', function *(next) {
         yield next;
         this.body = yield render('index', {
             config: config

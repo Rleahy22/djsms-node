@@ -1,107 +1,94 @@
 (function() {
     "use strict";
 
-    const componentRegistry = {
-        bindings: {
-            activeVideo:     '=',
-            playlist:        '=',
-            updatedPlaylist: '='
-        },
-        controller: controller,
-        template: '<div id="ytplayer"></div>'
-    };
+    class YoutubePlayer {
+        constructor ($window, _) {
+            Object.assign(this, { $window, _ });
 
-    function controller($scope, $window, _) {
-        var $ctrl = this;
+            this.player = {};
+            this.ready = false;
+        }
 
-        $ctrl.addVideosToPlaylist = addVideosToPlaylist;
-        $ctrl.changeVideo         = changeVideo;
-        $ctrl.loadPlayer          = loadPlayer;
-        $ctrl.onPlayerReady       = onPlayerReady;
-        $ctrl.onStateChange       = onStateChange;
-        $ctrl.player              = {};
-        $ctrl.ready               = false;
-        $ctrl.updatePlaylist      = updatePlaylist;
-
-        $ctrl.$onInit = function() {
+        $onInit () {
             /* istanbul ignore next */
-            if ($window.YT && $window.YT.loaded) {
-                $ctrl.loadPlayer();
+            if (this.$window.YT && this.$window.YT.loaded) {
+                this.loadPlayer();
             } else {
-                $window.onYouTubePlayerAPIReady = function() {
-                    $ctrl.loadPlayer();
+                this.$window.onYouTubePlayerAPIReady = () => {
+                    this.loadPlayer();
                 };
             }
         };
 
-        function addVideosToPlaylist() {
-            $ctrl.player.cuePlaylist($ctrl.playerPlaylist);
+        $onChanges (changesObj) {
+            let { videos, activeVideo } = changesObj;
+
+            if (videos && videos.currentValue && this.ready) {
+                this.updatePlaylist();
+            } else if (activeVideo && activeVideo.currentValue && this.ready) {
+                this.changeVideo(activeVideo.currentValue);
+            }
         }
 
-        function changeVideo(index) {
-            var currentIndex = $ctrl.player.getPlaylistIndex();
+        addVideosToPlaylist () {
+            this.player.cuePlaylist(this.playerPlaylist);
+        }
+
+        changeVideo (index) {
+            let currentIndex = this.player.getPlaylistIndex();
             if (currentIndex !== index) {
-                $ctrl.player.playVideoAt(index);
+                this.player.playVideoAt(index);
             }
         }
 
         /* istanbul ignore next */
-        function loadPlayer() {
-            $ctrl.player = new YT.Player('ytplayer', {
+        loadPlayer () {
+            this.player = new YT.Player('ytplayer', {
                 playerVars: { 'autoplay': 1 },
                 events: {
-                    'onReady': $ctrl.onPlayerReady,
-                    'onStateChange': $ctrl.onStateChange
+                    'onReady': this.onPlayerReady.bind(this),
+                    'onStateChange': this.onStateChange.bind(this)
                 }
             });
         }
 
-        function onPlayerReady() {
-            $ctrl.ready = true;
-            if (!(_.isEmpty($ctrl.playlist.videos))) {
-                $ctrl.playerPlaylist = _.map($ctrl.playlist.videos, 'videoid');
-                $ctrl.addVideosToPlaylist();
+        onPlayerReady () {
+            this.ready = true;
+            if (!(_.isEmpty(this.videos))) {
+                this.playerPlaylist = _.map(this.videos, 'videoid');
+                this.addVideosToPlaylist();
             }
         }
 
-        function onStateChange() {
-            var currentIndex = $ctrl.player.getPlaylistIndex();
+        onStateChange () {
+            let currentIndex = this.player.getPlaylistIndex();
 
-            if (currentIndex !== $ctrl.playlist.activeVideo && $ctrl.updatedPlaylist) {
-                $ctrl.playlist = $ctrl.updatedPlaylist;
-                $ctrl.updatedPlaylist = undefined;
-                $ctrl.updatePlaylist();
+            if (currentIndex !== this.activeVideo && this.updatedPlaylist) {
+                this.updatePlaylist();
             }
 
-            $ctrl.playlist.activeVideo = currentIndex;
-            $scope.$apply();
+            this.activeVideo = currentIndex;
         }
 
-        function updatePlaylist() {
-            $ctrl.playerPlaylist = _.map($ctrl.playlist.videos, 'videoid');
-            var currentTime = $ctrl.player.getCurrentTime();
-            var currentIndex = $ctrl.player.getPlaylistIndex();
-            $ctrl.player.loadPlaylist($ctrl.playerPlaylist, currentIndex, currentTime);
+        updatePlaylist () {
+            this.playerPlaylist = _.map(this.videos, 'videoid');
+            let currentTime = this.player.getCurrentTime();
+            let currentIndex = this.player.getPlaylistIndex();
+
+            this.player.loadPlaylist(this.playerPlaylist, currentIndex, currentTime);
         }
-
-        $scope.$watch('$ctrl.updatedPlaylist.videos', function() {
-            if ($ctrl.updatedPlaylist && $ctrl.player.getPlayerState) {
-                if ($ctrl.player.getPlayerState() !== 1) {
-                    $ctrl.playlist = $ctrl.updatedPlaylist;
-                    $ctrl.updatedPlaylist = undefined;
-                    $ctrl.updatePlaylist();
-                }
-            }
-        });
-
-        $scope.$watch('$ctrl.playlist.activeVideo', function() {
-            if ($ctrl.playlist && $ctrl.ready) {
-                $ctrl.changeVideo($ctrl.playlist.activeVideo);
-            }
-        });
     }
 
-    componentRegistry.$inject = ['$scope', '$window', 'lodash'];
+    const componentRegistry = {
+        bindings: {
+            activeVideo: '<',
+            videos: '<',
+        },
+        controller: YoutubePlayer,
+        template: '<div id="ytplayer"></div>'
+    };
+
+    componentRegistry.$inject = ['$window', 'lodash'];
 
     angular.module('app')
     .component('youtubePlayer', componentRegistry);

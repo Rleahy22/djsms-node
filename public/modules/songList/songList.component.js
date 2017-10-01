@@ -1,58 +1,42 @@
 (function() {
     'use strict';
 
-    const componentRegistry = {
-        bindings: {},
-        controller: songListController,
-        template: `
-            <md-list class="song-list">
-                <md-list-item
-                    ng-repeat="video in $ctrl.playlist.videos track by $index"
-                    class="song-row md-default-theme"
-                    ng-class="{'md-accent': $index === $ctrl.playlist.activeVideo}"
-                    ng-click="$ctrl.playVideo($index)"
-                >
-                    <img class="song-image" src="{{video.thumbnail}}">
-                    <span class="song-title">{{video.title}}</span>
-                    <md-button ng-click="$ctrl.deleteVideo(video.id, $event)" class="song-delete-btn">X</md-button>
-                </md-list-item>
-            </md-list>
-        `
-    };
+    class SongListController {
+        constructor (playlistService) {
+            Object.assign(this, { playlistService });
+        }
 
-    function songListController ($scope, playlistService) {
-        var $ctrl = this;
+        $onInit () {
+            this.playlist = this.playlistService.getCurrentPlaylist();
+        }
 
-        $ctrl.$scope          = $scope;
-        $ctrl.deleteVideo     = deleteVideo;
-        $ctrl.playlist        = playlistService.currentPlaylist;
-        $ctrl.playlistService = playlistService;
-        $ctrl.playVideo       = playVideo;
-
-        $scope.$watch('$ctrl.playlistService.currentPlaylist', function(newVal) {
-            $ctrl.playlist = newVal;
-        });
-
-        function deleteVideo(videoId, event) {
+        deleteVideo (videoId, event) {
             if (event.stopPropagation) { event.stopPropagation(); }
             if (event.preventDefault) { event.preventDefault(); }
+
             event.cancelBubble = true;
             event.returnValue = false;
 
-            playlistService.deleteVideo(videoId)
-            .then(function() {
-                _.remove($ctrl.playlist.videos, function(video) {
+            this.playlistService.deleteVideo(videoId)
+            .then(() => {
+                _.remove(this.playlist.videos, (video) => {
                     return video.id === videoId;
                 });
             });
         }
 
-        function playVideo(index) {
-            $ctrl.playlistService.currentPlaylist.activeVideo = index;
+        playVideo (index) {
+            this.playlistService.currentPlaylist.activeVideo = index;
         }
     }
 
-    songListController.$inject = ['$scope', 'playlistService'];
+    const componentRegistry = {
+        bindings: {},
+        controller: SongListController,
+        templateUrl: '/public/modules/songList/songList.html'
+    };
+
+    SongListController.$inject = ['playlistService'];
 
     angular.module('app')
     .component('songList', componentRegistry);

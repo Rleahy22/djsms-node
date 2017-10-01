@@ -14,11 +14,11 @@
             })
             .state('layout.playlists', {
                 url: 'playlists',
-                templateUrl: '/public/modules/playlist/playlists.html'
+                template: '<playlists></playlists>'
             })
             .state('layout.playlist', {
                 url: 'playlists/:playlistId',
-                templateUrl: '/public/modules/player/player.html'
+                template: '<player></player>'
             });
 
         $urlRouterProvider.otherwise("/");
